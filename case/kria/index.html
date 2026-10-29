@@ -1,0 +1,699 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kria — Smart AI fitness mirror · Case study</title>
+<meta name="description" content="Kria: a smart AI fitness mirror. LiDAR + pose fusion for 3D form analysis, an LLM voice coach in Hinglish, and an adaptive 8-week kettlebell system. Designed, built and run live by Anurag.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0907; --bg2:#0F0E0B; --card:#151410; --card2:#1B1914; --line:rgba(245,237,208,.08); --line2:rgba(245,237,208,.15);
+  --t1:#F5EDD0; --t2:#B6AD97; --t3:#7A725F; --gold:#FDE04F; --goldA:rgba(253,224,79,.12); --blue:#60C8FF; --green:#4ADE80; --red:#E84040;
+  --disp:'Inter Tight','Inter',-apple-system,'SF Pro Display',system-ui,sans-serif;
+  --body:'Inter',-apple-system,'SF Pro Text',system-ui,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+  --pad:clamp(20px,5vw,56px); --max:1160px; --r:28px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--t1);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,video,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:var(--pad)}
+.sec{padding-block:clamp(80px,11vw,152px)}
+.sec.tight{padding-top:0}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:13px;font-weight:500;color:var(--t2);letter-spacing:.01em}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 12px rgba(253,224,79,.7)}
+h1,h2,h3{font-family:var(--disp);font-weight:600;letter-spacing:-.035em;line-height:1.02}
+h1{font-size:clamp(46px,7.6vw,104px)}
+h2{font-size:clamp(34px,5vw,64px);margin-top:18px}
+h3{font-size:clamp(22px,2.4vw,28px);letter-spacing:-.025em;line-height:1.15}
+.dim{color:var(--t3)}
+.logline{font-family:var(--disp);font-weight:500;font-size:clamp(20px,2.1vw,26px);line-height:1.35;letter-spacing:-.015em;color:var(--t1);max-width:40ch;margin-top:24px}
+.lede{font-size:clamp(17px,1.7vw,20px);line-height:1.55;color:var(--t2);max-width:60ch;margin-top:22px}
+.p{color:var(--t2);font-size:15.5px;line-height:1.6}
+.mono{font-family:var(--mono)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.label{font-size:12px;font-weight:500;color:var(--t3);letter-spacing:.02em}
+.concept{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--t3);padding:5px 10px;border:1px solid var(--line2);border-radius:999px;background:rgba(10,9,7,.6);backdrop-filter:blur(8px)}
+.grid{display:grid;gap:16px}
+@media(min-width:780px){.c2{grid-template-columns:1fr 1fr}.c3{grid-template-columns:repeat(3,1fr)}.c4{grid-template-columns:repeat(4,1fr)}}
+.sp1{height:16px}.sp2{height:32px}.sp3{height:56px}.sp4{height:88px}
+.cols3{display:grid;gap:28px;margin-top:40px}
+@media(min-width:780px){.cols3{grid-template-columns:repeat(3,1fr);gap:36px}}
+.cols3 h4{font-size:15px;font-weight:600;color:var(--t1);display:flex;align-items:center;gap:8px}
+.cols3 h4 i{font-style:normal;font-family:var(--mono);font-size:11px;color:var(--gold);font-weight:400}
+.cols3 p{color:var(--t2);font-size:15px;margin-top:8px;line-height:1.6}
+.cols3 .call p{color:var(--t1)}
+
+/* reveal */
+.rv-on .rv{opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.7,.2,1)}
+.rv-on .rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv-on .rv{opacity:1;transform:none;transition:none}}
+
+/* ── hero ── */
+.hero{padding-top:clamp(56px,8vw,104px);position:relative;overflow:hidden}
+.hero::before{content:"";position:absolute;left:50%;top:-240px;width:1100px;height:700px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(253,224,79,.10),transparent 70%);pointer-events:none}
+.kicker{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:14px;color:var(--t2)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;border:1px solid var(--line2);background:rgba(245,237,208,.04);font-size:12.5px;color:var(--t1)}
+.hero h1{margin-top:22px;max-width:12ch}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin-top:32px}
+.btn{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:999px;font-size:14.5px;font-weight:500;border:1px solid var(--line2);color:var(--t1);transition:background .2s,border-color .2s}
+.btn:hover{background:rgba(245,237,208,.06);border-color:rgba(245,237,208,.3)}
+.btn.primary{background:var(--gold);color:#16130a;border-color:var(--gold)}
+.btn.primary:hover{background:#ffe86e}
+.btn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.stage{margin-top:clamp(48px,6vw,72px);display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(8px,1.4vw,16px);align-items:end}
+.panel{position:relative;border-radius:22px;overflow:hidden;background:#000;border:1px solid var(--line);aspect-ratio:9/16}
+.panel video{width:100%;height:100%;object-fit:cover}
+.panel .tag{position:absolute;left:12px;bottom:12px;right:12px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t1);padding:8px 12px;border-radius:12px;background:rgba(10,9,7,.66);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--line)}
+.panel .tag b{width:6px;height:6px;border-radius:50%;background:#ff4d4d;box-shadow:0 0 8px #ff4d4d;flex:none}
+.stage .panel:nth-child(2){transform:translateY(-28px)}
+@media(max-width:620px){.stage{grid-template-columns:1fr 1fr}.stage .panel:nth-child(3){display:none}.stage .panel:nth-child(2){transform:none}.panel .tag{font-size:11px;left:8px;right:8px;bottom:8px;padding:6px 8px}}
+.meta{display:grid;grid-template-columns:1fr 1fr;gap:22px 28px;margin-top:56px;padding-top:28px;border-top:1px solid var(--line)}
+@media(min-width:860px){.meta{grid-template-columns:1.3fr .8fr 1fr 1.4fr}}
+.meta dt{font-size:12px;color:var(--t3)}
+.meta dd{font-size:14.5px;margin-top:4px;color:var(--t1)}
+
+/* ── spec strip ── */
+.specs{display:grid;grid-template-columns:repeat(2,1fr);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--line);gap:1px}
+@media(min-width:860px){.specs{grid-template-columns:repeat(6,1fr)}}
+.spec{background:var(--bg2);padding:22px 20px 24px}
+.spec .n{font-family:var(--disp);font-weight:600;font-size:clamp(30px,3.2vw,40px);letter-spacing:-.03em;line-height:1;color:var(--t1)}
+.spec .n span{color:var(--gold)}
+.spec p{font-size:13px;color:var(--t2);margin-top:10px;line-height:1.45}
+
+/* ── demo ── */
+.demo{display:grid;gap:28px;margin-top:48px;align-items:start}
+@media(min-width:880px){.demo{grid-template-columns:minmax(280px,400px) 1fr;gap:48px}}
+.player{aspect-ratio:9/16;border-radius:28px;overflow:hidden;background:#000;border:1px solid var(--line2);box-shadow:0 40px 80px -40px rgba(0,0,0,.9);max-width:400px;width:100%;margin:0 auto}
+.player video{width:100%;height:100%;object-fit:cover}
+.tabs{display:grid;gap:10px}
+.tab{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:6px 16px;padding:20px 22px;border-radius:20px;border:1px solid var(--line);background:var(--card);transition:border-color .2s,background .2s}
+.tab:hover{border-color:var(--line2)}
+.tab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.tab[aria-selected="true"]{border-color:rgba(253,224,79,.5);background:linear-gradient(180deg,rgba(253,224,79,.07),rgba(253,224,79,.02))}
+.tab b{font-weight:600;font-size:16px}
+.tab span{font-family:var(--mono);font-size:12px;color:var(--t3);align-self:center}
+.tab p{grid-column:1/-1;font-size:14px;color:var(--t2);line-height:1.5}
+.tab ul{grid-column:1/-1;list-style:none;display:none;flex-wrap:wrap;gap:6px;margin-top:6px}
+.tab[aria-selected="true"] ul{display:flex}
+.tab li{font-size:12px;padding:5px 10px;border-radius:999px;background:rgba(245,237,208,.06);color:var(--t2)}
+
+/* ── built ── */
+.built{display:grid;gap:16px;margin-top:48px}
+@media(min-width:780px){.built{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1080px){.built{grid-template-columns:repeat(4,1fr)}}
+.bc{padding:26px 24px 28px;display:flex;flex-direction:column;gap:12px}
+.ico{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:var(--goldA);color:var(--gold)}
+.ico svg{width:22px;height:22px}
+.bc h3{font-size:20px;margin-top:6px}
+.bc p{font-size:14.5px;color:var(--t2);line-height:1.55}
+.bc .chips{margin-top:auto;padding-top:8px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-size:11.5px;padding:5px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--t2)}
+.wideimg{position:relative;margin-top:16px}
+.wideimg img{width:100%;height:auto}
+.wideimg .concept{position:absolute;left:16px;top:16px}
+
+/* ── problem charts ── */
+.charts{display:grid;gap:16px;margin-top:48px}
+@media(min-width:860px){.charts{grid-template-columns:repeat(2,1fr)}}
+.ch{padding:28px 28px 30px;display:flex;flex-direction:column;gap:18px}
+.ch .big{font-family:var(--disp);font-weight:600;font-size:clamp(48px,6vw,72px);letter-spacing:-.04em;line-height:.9}
+.ch .big small{font-size:.42em;letter-spacing:-.01em;color:var(--t2);margin-left:4px}
+.ch .cap{font-size:15px;color:var(--t1);font-weight:500;line-height:1.4}
+.ch .cap span{display:block;color:var(--t3);font-weight:400;font-size:13.5px;margin-top:4px}
+.ch-row{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center}
+@media(max-width:520px){.ch-row{grid-template-columns:1fr}}
+.hb{display:grid;gap:10px}
+.hb div{display:grid;grid-template-columns:56px 1fr 46px;align-items:center;gap:10px;font-size:12.5px;color:var(--t2)}
+.hb i{display:block;height:10px;border-radius:6px;background:rgba(245,237,208,.18);transform-origin:left;transition:transform 1.1s cubic-bezier(.2,.7,.2,1)}
+.hb .me{color:var(--gold);font-weight:600}
+.hb .me i{background:var(--gold);box-shadow:0 0 10px rgba(253,224,79,.6)}
+.hb b{font-weight:500;text-align:right;font-variant-numeric:tabular-nums}
+.rv-on .hb:not(.in) i{transform:scaleX(0)}
+.stack{height:14px;border-radius:8px;overflow:hidden;display:flex;background:rgba(245,237,208,.08)}
+.stack i{display:block;height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--t2)}
+.legend span{display:inline-flex;align-items:center;gap:8px}
+.legend b{width:10px;height:10px;border-radius:3px;display:inline-block}
+.src{font-size:12px;color:var(--t3);margin-top:20px}
+.reframe{margin-top:96px;display:grid;gap:36px;align-items:end}
+@media(min-width:900px){.reframe{grid-template-columns:1.25fr 1fr}}
+.reframe .q{font-family:var(--disp);font-weight:600;font-size:clamp(34px,4.6vw,58px);letter-spacing:-.035em;line-height:1.04}
+.shift{display:grid;gap:8px}
+.shift div{display:grid;grid-template-columns:1fr 28px 1.2fr;align-items:center;padding:14px 18px;border-radius:16px;background:var(--card);border:1px solid var(--line);font-size:14.5px}
+.shift s{color:var(--t3);text-decoration-color:rgba(245,237,208,.3)}
+.shift i{font-style:normal;color:var(--t3);text-align:center}
+.shift b{font-weight:500;color:var(--gold)}
+
+/* ── canvas (node graphs) ── */
+.canvas{margin-top:44px;border-radius:var(--r);border:1px solid var(--line);background:var(--bg2);overflow-x:auto;overflow-y:hidden;scrollbar-width:thin;scrollbar-color:#3a352b transparent}
+.canvas svg{min-width:960px;width:100%;height:auto}
+.canvas.flow svg{min-width:1180px}
+.canvas-note{font-size:12.5px;color:var(--t3);margin-top:12px;display:flex;flex-wrap:wrap;gap:6px 22px}
+.canvas-note b{font-weight:500;color:var(--t2)}
+@media(min-width:1200px){.canvas-note .sw{display:none}}
+
+/* ── math ── */
+.steps{display:grid;gap:16px;margin-top:48px}
+@media(min-width:860px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.steps{grid-template-columns:repeat(3,1fr)}}
+.st{padding:24px 24px 26px;display:flex;flex-direction:column;gap:14px}
+.st .no{font-family:var(--mono);font-size:12px;color:var(--gold)}
+.st h3{font-size:19px}
+.fx{font-family:var(--mono);font-size:15px;color:var(--t1);background:rgba(245,237,208,.04);border:1px solid var(--line);border-radius:14px;padding:12px 14px;line-height:1.5;overflow-x:auto;white-space:nowrap}
+.fx em{font-style:normal;color:var(--gold)}
+.st p{font-size:14px;color:var(--t2);line-height:1.55}
+.st .dia{border-radius:14px;background:var(--bg2);border:1px solid var(--line);aspect-ratio:16/9;display:grid;place-items:center;padding:10px}
+.st .dia svg{width:100%;height:100%}
+.wide2{display:grid;gap:16px;margin-top:16px}
+.wf{display:grid;gap:20px;align-items:center}
+@media(min-width:860px){.wf{grid-template-columns:1.2fr 1fr}}
+.wf .rules{margin-top:0}
+.wc{padding:26px 26px 22px}
+.wc h3{font-size:19px}
+.wc p{font-size:14px;color:var(--t2);margin-top:6px;line-height:1.55}
+.wc svg{width:100%;height:auto;margin-top:18px}
+.rules{display:grid;gap:8px;margin-top:16px}
+.scrollx{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#3a352b transparent}
+@media(max-width:620px){.scrollx svg{min-width:560px}}
+.rules div{display:grid;grid-template-columns:1fr auto;gap:12px;font-size:13.5px;color:var(--t2);padding:10px 12px;border-radius:12px;background:rgba(245,237,208,.035)}
+.rules b{font-family:var(--mono);font-weight:500;color:var(--red)}
+.proof{display:grid;gap:16px;margin-top:16px;grid-template-columns:1fr 1fr}
+@media(min-width:900px){.proof{grid-template-columns:1fr 1fr 1.4fr}}
+.proof .panel{aspect-ratio:auto}
+.proof .vid9{aspect-ratio:9/16}
+.proof .vid16{aspect-ratio:16/9}
+.proof .note{grid-column:1/-1;padding:24px}
+@media(min-width:900px){.proof .note{grid-column:auto}}
+.proof .note p{font-size:14px;color:var(--t2);margin-top:8px;line-height:1.55}
+
+/* ── coach ── */
+.pipe{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:36px}
+.pipe span{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;padding:10px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line)}
+.pipe span small{color:var(--t3);font-size:11.5px}
+.pipe span.g{border-color:rgba(253,224,79,.4);color:var(--gold)}
+.pipe i{font-style:normal;color:var(--t3)}
+.coach{display:grid;gap:16px;margin-top:16px}
+@media(min-width:900px){.coach{grid-template-columns:1.2fr 1fr}}
+.chat{padding:24px;display:flex;flex-direction:column;gap:14px}
+.msg{display:grid;grid-template-columns:30px 1fr;gap:10px;align-items:start}
+.av{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff7c2,#FDE04F 40%,#a07800 100%);box-shadow:0 0 14px rgba(253,224,79,.5)}
+.av.b{background:radial-gradient(circle at 35% 30%,#e6f7ff,#60C8FF 40%,#1d5f86 100%);box-shadow:0 0 14px rgba(96,200,255,.5)}
+.bub{background:var(--card2);border:1px solid var(--line);border-radius:4px 18px 18px 18px;padding:11px 14px;font-size:14.5px;line-height:1.45;max-width:46ch}
+.bub small{display:block;font-size:11px;color:var(--t3);margin-bottom:4px}
+.knows{padding:24px}
+.knows ul{list-style:none;display:grid;gap:10px;margin-top:14px}
+.knows li{display:flex;gap:12px;align-items:baseline;font-size:14.5px;color:var(--t2)}
+.knows li::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:var(--gold);transform:translateY(-2px)}
+.voices{display:grid;gap:16px;margin-top:16px}
+@media(min-width:780px){.voices{grid-template-columns:repeat(3,1fr)}}
+.vc{padding:20px;display:grid;grid-template-columns:96px 1fr;gap:16px;align-items:start}
+.vc .scr{border-radius:12px}
+.vc h4{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+.vc p{font-size:13.5px;color:var(--t2);margin-top:6px;line-height:1.5}
+.vc .d{width:9px;height:9px;border-radius:50%}
+
+/* ── screens ── */
+.scr{border-radius:16px;overflow:hidden;background:#000;border:1px solid #2a261e}
+.scr img{width:100%;height:auto}
+
+/* ── kria system ── */
+.method{display:grid;gap:16px;margin-top:48px}
+@media(min-width:860px){.method{grid-template-columns:repeat(3,1fr)}}
+.mt{padding:24px}
+.mt .k{font-family:var(--disp);font-weight:600;font-size:34px;letter-spacing:-.03em}
+.mt p{font-size:14px;color:var(--t2);margin-top:6px;line-height:1.5}
+.sys{display:grid;gap:16px;margin-top:16px;align-items:start}
+@media(min-width:860px){.sys{grid-template-columns:1fr 1fr}.sys .full{grid-column:1/-1}}
+.pgrid{display:grid;gap:24px;align-items:center}
+@media(min-width:960px){.pgrid{grid-template-columns:.8fr 1.6fr}}
+.bells{display:flex;align-items:flex-end;gap:14px;margin-top:22px}
+.bells .s{display:flex;gap:6px;align-items:center}
+.bells .s i{width:22px;height:22px;border-radius:50%;background:rgba(74,222,128,.15);border:1px solid rgba(74,222,128,.6);display:grid;place-items:center;font-size:10px;font-style:normal;color:var(--green)}
+.kb{display:flex;align-items:flex-end;gap:10px;margin-top:20px}
+.kb div{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:12px;color:var(--t3);white-space:nowrap}
+.kb svg{width:auto}
+.kb .on{color:var(--gold)}
+.diff{display:grid;gap:8px;margin-top:18px}
+.diff div{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);font-size:13.5px;background:rgba(245,237,208,.03)}
+.diff .lay{border-color:rgba(253,224,79,.35);color:var(--gold)}
+.diff small{color:var(--t3);font-size:12px}
+.quote{margin-top:16px;display:grid;grid-template-columns:30px 1fr;gap:10px}
+
+/* ── morning strip ── */
+.strip{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;--sp:max(var(--pad),calc((100% - var(--max))/2 + var(--pad)));padding:8px var(--sp) 22px;scroll-padding-inline:var(--sp);margin-top:44px;scrollbar-width:thin;scrollbar-color:#3a352b transparent;cursor:grab}
+.strip.drag{cursor:grabbing;scroll-snap-type:none}
+.stop{flex:0 0 clamp(200px,22vw,250px);scroll-snap-align:start}
+.stop .scr{box-shadow:0 30px 60px -30px rgba(0,0,0,.9)}
+.stop .scr img{pointer-events:none;user-select:none}
+.stop .tm{font-family:var(--mono);font-size:12px;color:var(--gold);margin-top:14px}
+.stop h5{font-size:15px;font-weight:600;margin-top:2px}
+.stop p{font-size:13.5px;color:var(--t2);margin-top:4px;line-height:1.5}
+.hint{font-size:12.5px;color:var(--t3)}
+.minis{display:grid;gap:16px;margin-top:16px}
+@media(min-width:780px){.minis{grid-template-columns:repeat(3,1fr)}}
+.mini{padding:18px}
+.mini .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini .scr{border-radius:12px}
+.mini h4{font-size:15px;font-weight:600;margin-top:16px}
+.mini p{font-size:13.5px;color:var(--t2);margin-top:4px;line-height:1.5}
+
+/* ── glass ── */
+.glass{display:grid;gap:16px;margin-top:48px;align-items:start}
+@media(min-width:900px){.glass{grid-template-columns:1fr 1fr}}
+.gpair{display:grid;grid-template-columns:4fr 3fr;gap:12px;align-items:end;padding:16px}
+.gpair figure img{width:100%;height:auto;border-radius:14px}
+.gpair figcaption{font-size:12px;color:var(--t3);margin-top:8px}
+.gside{padding:26px}
+.sw{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.sw span{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--t2);padding:6px 12px 6px 6px;border-radius:999px;border:1px solid var(--line)}
+.sw i{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.15)}
+.cmds{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.cmds span{font-family:var(--mono);font-size:12.5px;padding:8px 13px;border-radius:999px;background:var(--goldA);color:var(--gold);border:1px solid rgba(253,224,79,.25)}
+.vpair{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px}
+
+/* ── build ── */
+.kit{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;margin-top:44px;grid-template-columns:1fr 1fr}
+@media(min-width:860px){.kit{grid-template-columns:repeat(3,1fr)}}
+.kit div{background:var(--bg2);padding:18px 22px}
+.kit .k{font-size:12px;color:var(--t3)}
+.kit .v{font-size:15px;margin-top:3px}
+.masonry{columns:2;column-gap:14px;margin-top:16px}
+@media(min-width:900px){.masonry{columns:3;column-gap:16px}}
+.masonry figure{break-inside:avoid;margin-bottom:14px;border-radius:20px;overflow:hidden;border:1px solid var(--line);background:var(--card)}
+.masonry img{width:100%;height:auto}
+.masonry figcaption{font-size:12.5px;color:var(--t2);padding:12px 14px}
+.aiw{display:grid;gap:16px;margin-top:16px}
+@media(min-width:780px){.aiw{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1080px){.aiw{grid-template-columns:repeat(3,1fr)}}
+.aic{padding:24px}
+.aic .no{font-family:var(--mono);font-size:11.5px;color:var(--gold);letter-spacing:.06em;text-transform:uppercase}
+.aic h4{font-size:17px;font-weight:600;margin-top:10px;letter-spacing:-.01em}
+.aic p{font-size:14px;color:var(--t2);margin-top:8px;line-height:1.55}
+.fixes{display:grid;gap:16px;margin-top:16px}
+@media(min-width:780px){.fixes{grid-template-columns:repeat(2,1fr)}}
+.fixc{padding:24px}
+.fixc h4{font-size:16px;font-weight:600}
+.fixc p{font-size:14px;color:var(--t2);margin-top:8px;line-height:1.55}
+.fixc p b{color:var(--gold);font-weight:500}
+
+/* ── outcome ── */
+.works{display:grid;gap:10px;margin-top:36px}
+@media(min-width:780px){.works{grid-template-columns:1fr 1fr 1fr}}
+.works div{display:flex;gap:12px;align-items:center;padding:16px 18px;border-radius:18px;background:var(--card);border:1px solid var(--line);font-size:14.5px}
+.works div::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;background:rgba(74,222,128,.14);color:var(--green)}
+.next{display:grid;gap:16px;margin-top:16px}
+@media(min-width:780px){.next{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1080px){.next{grid-template-columns:repeat(4,1fr)}}
+.nx{padding:24px}
+.nx .no{font-family:var(--mono);font-size:12px;color:var(--gold)}
+.nx h4{font-size:16px;font-weight:600;margin-top:10px}
+.nx p{font-size:14px;color:var(--t2);margin-top:6px;line-height:1.55}
+.learn{display:grid;gap:16px;margin-top:16px}
+@media(min-width:860px){.learn{grid-template-columns:repeat(3,1fr)}}
+.lc{padding:26px}
+.lc h4{font-family:var(--disp);font-size:22px;font-weight:600;letter-spacing:-.025em;line-height:1.15}
+.lc p{font-size:14px;color:var(--t2);margin-top:10px;line-height:1.55}
+.backlink{position:fixed;top:14px;left:14px;z-index:50;font-size:13px;font-weight:500;padding:9px 14px;border-radius:999px;background:rgba(21,20,16,.8);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--line2);color:var(--t1)}
+.foot{border-top:1px solid var(--line);margin-top:clamp(80px,10vw,120px);padding-block:28px 40px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--t3)}
+</style>
+</head>
+<body>
+<a class="backlink" href="/#work/kria" hidden>← Anurag's portfolio</a>
+
+<!-- ═════════ HERO ═════════ -->
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker rv"><span class="pill">NID Gandhinagar · 2026</span><span>Smart AI fitness mirror</span></p>
+    <h1 class="rv">A mirror that <span class="dim">trains you back.</span></h1>
+    <p class="lede rv">Kria is a smart fitness mirror that watches your form in 3D, coaches you out loud in your own language, and turns kettlebell training into a 30-minute daily habit. I designed and built it end to end: the hardware, the interface, the voice coach, the form-analysis maths and the training system behind it. Then I ran it live for my jury.</p>
+    <div class="cta rv">
+      <button class="btn primary" data-go="demo"><svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><path d="M3 1.8v10.4L12 7z"/></svg>Watch it run</button>
+      <button class="btn" data-go="math">How it measures you</button>
+    </div>
+    <div class="stage rv">
+      <div class="panel"><video data-loop src="vid/loop-pulse.mp4" poster="vid/loop-pulse.jpg" muted loop playsinline preload="none"></video><div class="tag"><b></b>Wakes on "Hey Aryan"</div></div>
+      <div class="panel"><video data-loop src="vid/loop-mirror.mp4" poster="vid/loop-mirror.jpg" muted loop playsinline preload="none"></video><div class="tag"><b></b>Live, through the two-way mirror</div></div>
+      <div class="panel"><video data-loop src="vid/loop-form.mp4" poster="vid/loop-form.jpg" muted loop playsinline preload="none"></video><div class="tag"><b></b>Fusion engine tracking a squat</div></div>
+    </div>
+    <dl class="meta rv">
+      <div><dt>Role</dt><dd>Solo. Research, product, interaction, voice, AI, hardware</dd></div>
+      <div><dt>Timeline</dt><dd>Mar – May 2026</dd></div>
+      <div><dt>Context</dt><dd>MDes New Media Design, NID</dd></div>
+      <div><dt>Built with</dt><dd>Python · MediaPipe · LiDAR · GPT-4o · Whisper · ElevenLabs</dd></div>
+    </dl>
+  </div>
+</header>
+
+<!-- ═════════ SPECS ═════════ -->
+<section class="sec" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="specs rv">
+      <div class="spec"><div class="n">33</div><p>body points tracked, every frame</p></div>
+      <div class="spec"><div class="n">3<span>D</span></div><p>joint angles, from LiDAR depth fused with pose</p></div>
+      <div class="spec"><div class="n">5</div><p>AI models working in one live loop</p></div>
+      <div class="spec"><div class="n">121</div><p>kettlebell exercises in the library</p></div>
+      <div class="spec"><div class="n">8<span>wk</span></div><p>adaptive plan that rebuilds itself</p></div>
+      <div class="spec"><div class="n">0</div><p>taps needed. It runs on your voice</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ DEMO ═════════ -->
+<section class="sec" id="demo">
+  <div class="wrap">
+    <p class="eyebrow rv">The prototype</p>
+    <h2 class="rv">Not a concept. <span class="dim">It runs.</span></h2>
+    <div class="demo">
+      <div class="player rv"><video id="demoVideo" controls playsinline preload="none" poster="vid/session.jpg" src="vid/session.mp4"></video></div>
+      <div class="tabs rv" role="tablist" aria-label="Prototype videos">
+        <button class="tab" role="tab" aria-selected="true" data-src="vid/session.mp4" data-poster="vid/session.jpg"><b>A full session</b><span>4:10</span><p>Wake, check-in, plan, squats, recap. One morning, start to finish.</p><ul><li>Hinglish check-in</li><li>Live plan swap</li><li>Skeleton tracking</li><li>Form-scored recap</li></ul></button>
+        <button class="tab" role="tab" aria-selected="false" data-src="vid/form.mp4" data-poster="vid/form.jpg"><b>Form analysis</b><span>1:44</span><p>A solo squat set with the fusion engine's numbers on screen.</p><ul><li>Rep counting</li><li>Depth data</li><li>Guided rest</li><li>Form score</li></ul></button>
+        <button class="tab" role="tab" aria-selected="false" data-src="vid/onboarding.mp4" data-poster="vid/onboarding.jpg"><b>On the real mirror</b><span>4:31</span><p>The conversation through the two-way glass, then into a workout.</p><ul><li>Voice-only</li><li>Two-way mirror</li><li>Coach conversation</li></ul></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ WHAT I BUILT ═════════ -->
+<section class="sec tight">
+  <div class="wrap">
+    <p class="eyebrow rv">What I built</p>
+    <h2 class="rv">A smart AI fitness mirror. <span class="dim">Four systems, one object.</span></h2>
+    <p class="lede rv">Off, it's a mirror. On, it sees you in 3D, coaches you out loud in Hinglish and runs a training plan that changes with you.</p>
+    <div class="built">
+      <div class="card bc rv"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M9 7.5l3-2M9 11l6-4"/></svg></div><h3>The mirror</h3><p>A portrait display behind two-way glass. Every screen designed for glass: dark is reflection, only light shows.</p><div class="chips"><span>Two-way mirror</span><span>Voice-first UI</span></div></div>
+      <div class="card bc rv"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="4.5" r="2"/><path d="M12 6.5v6M12 12.5l-3.5 7M12 12.5l3.5 7M7 9.5h10"/></svg></div><h3>The form analyser</h3><p>Camera pose and LiDAR depth fused into real 3D joints. Counts reps and scores every frame against form rules.</p><div class="chips"><span>BlazePose · 33 pts</span><span>LiDAR fusion</span><span>Form maths</span></div></div>
+      <div class="card bc rv"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 12h2M8 8v8M12 5v14M16 8v8M20 12h0"/></svg></div><h3>The LLM coach</h3><p>Aryan listens, understands and answers out loud. He knows your plan, your last session and your form right now.</p><div class="chips"><span>Whisper</span><span>GPT-4o</span><span>ElevenLabs</span></div></div>
+      <div class="card bc rv"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 6a3 3 0 016 0"/><path d="M6.5 9.5h11l1.2 9a2 2 0 01-2 2.3H7.3a2 2 0 01-2-2.3z"/></svg></div><h3>The Kria system</h3><p>My training system: an 8-week periodized block, a 3-bell progression gated by form, and a plan that bends daily.</p><div class="chips"><span>8-week plan</span><span>121 exercises</span></div></div>
+    </div>
+    <figure class="card wideimg rv"><img src="img/offon.webp" alt="Concept render: Kria off, an ordinary standing mirror; Kria on, the same mirror showing today's workout" loading="lazy"><span class="concept">Concept render · how it lives in a home</span></figure>
+  </div>
+</section>
+
+<!-- ═════════ PROBLEM ═════════ -->
+<section class="sec tight">
+  <div class="wrap">
+    <p class="eyebrow rv">Why build it</p>
+    <h2 class="rv">India is the most inactive <span class="dim">major country on earth.</span></h2>
+    <div class="charts">
+      <div class="card ch rv">
+        <div class="ch-row">
+          <svg viewBox="0 0 200 200" width="168" height="168" role="img" aria-label="49 of 100 dots filled"><circle cx="10" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="30" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="50" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="70" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="90" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="110" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="130" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="150" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="170" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="190" cy="10" r="7" fill="#FDE04F" opacity="1"/><circle cx="10" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="30" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="50" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="70" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="90" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="110" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="130" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="150" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="170" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="190" cy="30" r="7" fill="#FDE04F" opacity="1"/><circle cx="10" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="30" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="50" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="70" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="90" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="110" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="130" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="150" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="170" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="190" cy="50" r="7" fill="#FDE04F" opacity="1"/><circle cx="10" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="30" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="50" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="70" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="90" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="110" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="130" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="150" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="170" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="190" cy="70" r="7" fill="#FDE04F" opacity="1"/><circle cx="10" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="30" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="50" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="70" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="90" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="110" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="130" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="150" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="170" cy="90" r="7" fill="#FDE04F" opacity="1"/><circle cx="190" cy="90" r="7" fill="#FDE04F" opacity="0.4"/><circle cx="10" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="30" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="50" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="70" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="90" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="110" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="130" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="150" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="170" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="190" cy="110" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="10" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="30" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="50" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="70" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="90" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="110" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="130" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="150" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="170" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="190" cy="130" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="10" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="30" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="50" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="70" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="90" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="110" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="130" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="150" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="170" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="190" cy="150" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="10" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="30" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="50" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="70" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="90" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="110" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="130" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="150" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="170" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="190" cy="170" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="10" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="30" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="50" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="70" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="90" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="110" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="130" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="150" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="170" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/><circle cx="190" cy="190" r="7" fill="#F5EDD0" opacity="0.12"/></svg>
+          <div style="display:flex;flex-direction:column;gap:18px"><div class="big">49.4<small>%</small></div><p class="cap">of Indian adults are insufficiently active<span>57% of women and 42% of men fail to meet the minimum activity a week.</span></p></div>
+        </div>
+      </div>
+      <div class="card ch rv">
+        <div class="big">0.8<small>%</small></div>
+        <p class="cap">gym penetration<span>46,500 gyms for 1.4 billion people.</span></p>
+        <div class="hb">
+          <div><span>USA</span><i style="width:100%"></i><b>25%</b></div>
+          <div><span>UK</span><i style="width:68%"></i><b>17%</b></div>
+          <div><span>Brazil</span><i style="width:28%"></i><b>7%</b></div>
+          <div><span>China</span><i style="width:12%"></i><b>3%</b></div>
+          <div class="me"><span>India</span><i style="width:3.2%"></i><b>0.8%</b></div>
+        </div>
+      </div>
+      <div class="card ch rv">
+        <div class="big">66<small>%</small></div>
+        <p class="cap">of Indian deaths now come from non-communicable disease<span>Diabetes, heart disease, cancer, stroke. The biggest preventable cause is not moving.</span></p>
+        <svg viewBox="0 0 520 170" role="img" aria-label="Share of deaths from non-communicable disease rose from 38% in 1990 to 66% now"><defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FDE04F" stop-opacity=".28"/><stop offset="1" stop-color="#FDE04F" stop-opacity="0"/></linearGradient></defs><line x1="36" x2="500" y1="108.5" y2="108.5" stroke="rgba(245,237,208,.13)" stroke-dasharray="2 4"/><text x="28" y="112.5" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">20%</text><line x1="36" x2="500" y1="77.0" y2="77.0" stroke="rgba(245,237,208,.13)" stroke-dasharray="2 4"/><text x="28" y="81.0" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">40%</text><line x1="36" x2="500" y1="45.5" y2="45.5" stroke="rgba(245,237,208,.13)" stroke-dasharray="2 4"/><text x="28" y="49.5" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">60%</text><line x1="36" x2="500" y1="14.0" y2="14.0" stroke="rgba(245,237,208,.13)" stroke-dasharray="2 4"/><text x="28" y="18.0" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">80%</text><path d="M36,80.2 L500,36.0 L500,140.0 L36,140.0Z" fill="url(#ag)"/><line x1="36" y1="80.2" x2="500" y2="36.0" stroke="#FDE04F" stroke-width="2.5" stroke-linecap="round"/><circle cx="36" cy="80.2" r="5.5" fill="#0A0907" stroke="#FDE04F" stroke-width="2.5"/><text x="46" y="68.2" text-anchor="start" font-size="13" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">38%</text><text x="36" y="162" text-anchor="start" font-size="11.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">1990</text><circle cx="500" cy="36.0" r="5.5" fill="#0A0907" stroke="#FDE04F" stroke-width="2.5"/><text x="490" y="24.0" text-anchor="end" font-size="13" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">66%</text><text x="500" y="162" text-anchor="end" font-size="11.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">Now</text></svg>
+      </div>
+      <div class="card ch rv">
+        <div class="big">237<small>MILLION</small></div>
+        <p class="cap">Indians are diabetic or pre-diabetic<span>And half of all health spending comes out of pocket.</span></p>
+        <div class="stack"><i style="width:42.6%;background:var(--gold)"></i><i style="width:57.4%;background:rgba(253,224,79,.32)"></i></div>
+        <div class="legend"><span><b style="background:var(--gold)"></b>101M diabetic</span><span><b style="background:rgba(253,224,79,.32)"></b>136M pre-diabetic</span></div>
+      </div>
+    </div>
+    <p class="src rv">Desk research compiled for the jury pitch: national activity surveys, disease-burden studies, industry gym counts. 42% of India is under 25; by 2050 there will be 347M elderly citizens.</p>
+
+    <div class="reframe">
+      <p class="q rv">The problem isn't motivation. <span class="dim">Fitness is designed as punishment.</span></p>
+      <div class="shift rv">
+        <div><s>Punishment</s><i>→</i><b>Daily practice</b></div>
+        <div><s>Something extra</s><i>→</i><b>Already in your room</b></div>
+        <div><s>Alone, unchecked</s><i>→</i><b>Coached, every rep</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ ARCHITECTURE ═════════ -->
+<section class="sec tight" id="arch">
+  <div class="wrap">
+    <p class="eyebrow rv">How it works</p>
+    <h2 class="rv">Three sensors in. <span class="dim">A coach out.</span></h2>
+    <p class="lede rv">Everything runs live on the product itself. Pose tracking stays on the device; only speech goes to the cloud.</p>
+    <div class="canvas rv"><svg viewBox="0 0 1220 440" role="img" aria-label="System architecture: camera, LiDAR and microphone feed pose, depth and speech; a fusion engine and form analyser feed Aryan, who responds through voice and the mirror UI"><defs><pattern id="dg1220" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r="1.2" fill="rgba(245,237,208,.09)"/></pattern></defs><rect width="1220" height="440" fill="url(#dg1220)"/><text x="28" y="22" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace" letter-spacing=".08em">SENSE</text><text x="272" y="22" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace" letter-spacing=".08em">PERCEIVE</text><text x="516" y="22" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace" letter-spacing=".08em">FUSE + PLAN</text><text x="760" y="22" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace" letter-spacing=".08em">DECIDE</text><text x="994" y="22" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace" letter-spacing=".08em">RESPOND</text><path d="M236,71.0 C266,71.0 238,71.0 268,71.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="236" cy="71.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="268" cy="71.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M236,235.0 C266,235.0 238,235.0 268,235.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="236" cy="235.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="268" cy="235.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M236,399.0 C266,399.0 238,399.0 268,399.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="236" cy="399.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="268" cy="399.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M480,71.0 C510,71.0 482,153.0 512,153.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="480" cy="71.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="512" cy="153.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M480,235.0 C510,235.0 482,153.0 512,153.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="480" cy="235.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="512" cy="153.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M724,153.0 C754,153.0 726,153.0 756,153.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="724" cy="153.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="756" cy="153.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M968,153.0 C998,153.0 960,153.0 990,153.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="968" cy="153.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="990" cy="153.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M862.0,184 C862.0,249.7 862.0,264.3 862.0,330" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="862.0" cy="184" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="862.0" cy="330" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><rect x="828" y="247" width="68" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="862" y="260" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">live form</text><path d="M480,399.0 C604.2,399.0 631.8,361.0 756,361.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="480" cy="399.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="756" cy="361.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="572" y="366" width="93" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="618" y="380" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">what you said</text><path d="M724,317.0 C754,317.0 726,361.0 756,361.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="724" cy="317.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="756" cy="361.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M968,361.0 C998,361.0 960,361.0 990,361.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="968" cy="361.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="990" cy="361.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><g><rect x="24" y="40" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="36" y="53" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="48" cy="65" r="4.2" fill="#B6AD97"/><text x="70" y="64" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Camera</text><text x="70" y="81" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">Full-HD webcam</text></g><g><rect x="24" y="204" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="36" y="217" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="48" cy="229" r="4.2" fill="#B6AD97"/><text x="70" y="228" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">LiDAR</text><text x="70" y="245" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">YDLIDAR X2L · 360°</text></g><g><rect x="24" y="368" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="36" y="381" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="48" cy="393" r="4.2" fill="#B6AD97"/><text x="70" y="392" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Microphone</text><text x="70" y="409" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">USB condenser</text></g><g><rect x="268" y="40" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="280" y="53" width="24" height="24" rx="8" fill="#60C8FF" fill-opacity=".14"/><circle cx="292" cy="65" r="4.2" fill="#60C8FF"/><text x="314" y="64" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Pose</text><text x="314" y="81" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">BlazePose · 33 points</text></g><g><rect x="268" y="204" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="280" y="217" width="24" height="24" rx="8" fill="#60C8FF" fill-opacity=".14"/><circle cx="292" cy="229" r="4.2" fill="#60C8FF"/><text x="314" y="228" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Depth</text><text x="314" y="245" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">median ±15° · 5 scans</text></g><g><rect x="268" y="368" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="280" y="381" width="24" height="24" rx="8" fill="#60C8FF" fill-opacity=".14"/><circle cx="292" cy="393" r="4.2" fill="#60C8FF"/><text x="314" y="392" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Speech</text><text x="314" y="409" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">VAD → Whisper v3 Turbo</text></g><g><rect x="512" y="122" width="212" height="62" rx="14" fill="#151410" stroke="rgba(253,224,79,.55)" stroke-width="1.2"/><rect x="524" y="135" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="536" cy="147" r="4.2" fill="#FDE04F"/><text x="558" y="146" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Fusion engine</text><text x="558" y="163" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">3D joints in mm</text></g><g><rect x="512" y="286" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="524" y="299" width="24" height="24" rx="8" fill="#4ADE80" fill-opacity=".14"/><circle cx="536" cy="311" r="4.2" fill="#4ADE80"/><text x="558" y="310" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Plan engine</text><text x="558" y="327" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">8-week block · 3 bells</text></g><g><rect x="756" y="122" width="212" height="62" rx="14" fill="#151410" stroke="rgba(253,224,79,.55)" stroke-width="1.2"/><rect x="768" y="135" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="780" cy="147" r="4.2" fill="#FDE04F"/><text x="802" y="146" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Form analyser</text><text x="802" y="163" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">reps · angles · form %</text></g><g><rect x="756" y="330" width="212" height="62" rx="14" fill="#151410" stroke="rgba(253,224,79,.55)" stroke-width="1.2"/><rect x="768" y="343" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="780" cy="355" r="4.2" fill="#FDE04F"/><text x="802" y="354" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Aryan</text><text x="802" y="371" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">GPT-4o · intent + coaching</text></g><g><rect x="990" y="122" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="1002" y="135" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="1014" cy="147" r="4.2" fill="#B6AD97"/><text x="1036" y="146" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Mirror UI</text><text x="1036" y="163" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">HTML screens · PyWebView</text></g><g><rect x="990" y="330" width="212" height="62" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="1002" y="343" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="1014" cy="355" r="4.2" fill="#B6AD97"/><text x="1036" y="354" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Voice</text><text x="1036" y="371" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">ElevenLabs</text></g></svg></div>
+    <p class="canvas-note"><span><b>Gold</b> = the live coaching path</span><span class="sw">Scroll sideways to see the whole graph →</span></p>
+  </div>
+</section>
+
+<!-- ═════════ MATH ═════════ -->
+<section class="sec tight" id="math">
+  <div class="wrap">
+    <p class="eyebrow rv">The form analyser</p>
+    <h2 class="rv">How the mirror <span class="dim">measures you.</span></h2>
+    <p class="lede rv">A webcam alone sees in 2D. It can't tell how deep a squat goes or whether your knees drift toward it. So I fused it with LiDAR and worked out the maths that turns pixels into millimetres, angles and a form score, then used AI to turn that maths into fast, working code.</p>
+    <div class="steps">
+      <div class="card st rv"><p class="no">01 · Scale</p><h3>Calibrate to your body</h3><div class="fx">mm/px = <em>H</em><sub>you</sub> ÷ <em>h</em><sub>px</sub></div><p>Your real height (from onboarding) divided by your height in pixels, found by edge detection. No guessing the camera's field of view.</p><div class="dia"><svg viewBox="0 0 320 180"><g stroke="#F5EDD0" stroke-width="3" stroke-linecap="round" fill="none" opacity=".85"><circle cx="150" cy="34" r="12"/><path d="M150 46v52M150 62l-26 22M150 62l26 22M150 98l-18 52M150 98l18 52"/></g><path d="M206 22v128M198 22h16M198 150h16" stroke="#FDE04F" stroke-width="2"/><text x="222" y="90" font-size="13" fill="#FDE04F" font-family="JetBrains Mono,monospace">h px</text><text x="60" y="90" font-size="13" fill="#B6AD97" font-family="JetBrains Mono,monospace" text-anchor="end">H = 1750 mm</text><line x1="66" y1="86" x2="112" y2="86" stroke="#7A725F" stroke-dasharray="3 4"/></svg></div></div>
+      <div class="card st rv"><p class="no">02 · Verify</p><h3>Cross-check the camera</h3><div class="fx">FOV<sub>v</sub> = 2·atan( <em>h</em> ÷ 2<em>d</em> )</div><p>Back-calculates the camera's vertical field of view from LiDAR depth. Three methods vote; more than 5% disagreement triggers a recalibration.</p><div class="dia"><svg viewBox="0 0 320 180"><rect x="18" y="80" width="26" height="20" rx="5" fill="#B6AD97"/><path d="M44 90 L280 24 M44 90 L280 156" stroke="#7A725F" stroke-dasharray="4 4"/><path d="M280 24v132" stroke="#FDE04F" stroke-width="2"/><text x="288" y="94" font-size="13" fill="#FDE04F" font-family="JetBrains Mono,monospace">h</text><path d="M44 168h236" stroke="#B6AD97"/><text x="160" y="164" font-size="12.5" fill="#B6AD97" font-family="JetBrains Mono,monospace" text-anchor="middle">d (LiDAR)</text><path d="M86 78 A44 44 0 0 1 86 102" stroke="#FDE04F" fill="none" stroke-width="2"/><text x="96" y="95" font-size="12" fill="#FDE04F" font-family="JetBrains Mono,monospace">FOV</text></svg></div></div>
+      <div class="card st rv"><p class="no">03 · Depth</p><h3>Find you in the scan</h3><div class="fx"><em>d</em> = median( r<sub>θ</sub> ), θ ∈ [−15°, +15°]</div><p>The LiDAR spins 360°. I take the median distance in a 30° cone in front of the mirror, averaged over the last 5 scans.</p><div class="dia"><svg viewBox="0 0 320 180"><circle cx="160.0" cy="57.0" r="1.6" fill="#7A725F"/><circle cx="171.3" cy="57.6" r="1.6" fill="#7A725F"/><circle cx="182.5" cy="59.4" r="1.6" fill="#7A725F"/><circle cx="184.3" cy="90.2" r="1.6" fill="#7A725F"/><circle cx="192.9" cy="91.2" r="1.6" fill="#7A725F"/><circle cx="200.3" cy="95.1" r="1.6" fill="#7A725F"/><circle cx="206.1" cy="101.6" r="1.6" fill="#7A725F"/><circle cx="209.6" cy="109.9" r="1.6" fill="#7A725F"/><circle cx="211.0" cy="119.1" r="1.6" fill="#7A725F"/><circle cx="210.5" cy="128.3" r="1.6" fill="#7A725F"/><circle cx="208.7" cy="136.9" r="1.6" fill="#7A725F"/><circle cx="206.5" cy="144.3" r="1.6" fill="#7A725F"/><circle cx="204.7" cy="150.5" r="1.6" fill="#7A725F"/><circle cx="204.2" cy="155.6" r="1.6" fill="#7A725F"/><circle cx="205.2" cy="160.2" r="1.6" fill="#7A725F"/><circle cx="208.0" cy="165.0" r="1.6" fill="#7A725F"/><circle cx="212.0" cy="170.5" r="1.6" fill="#7A725F"/><circle cx="216.7" cy="177.1" r="1.6" fill="#7A725F"/><circle cx="89.5" cy="180.0" r="1.6" fill="#7A725F"/><circle cx="94.2" cy="171.9" r="1.6" fill="#7A725F"/><circle cx="100.1" cy="165.0" r="1.6" fill="#7A725F"/><circle cx="106.4" cy="159.4" r="1.6" fill="#7A725F"/><circle cx="111.9" cy="154.8" r="1.6" fill="#7A725F"/><circle cx="116.2" cy="150.8" r="1.6" fill="#7A725F"/><circle cx="118.9" cy="146.7" r="1.6" fill="#7A725F"/><circle cx="120.0" cy="141.9" r="1.6" fill="#7A725F"/><circle cx="120.0" cy="135.9" r="1.6" fill="#7A725F"/><circle cx="119.6" cy="128.6" r="1.6" fill="#7A725F"/><circle cx="119.6" cy="120.1" r="1.6" fill="#7A725F"/><circle cx="120.8" cy="111.0" r="1.6" fill="#7A725F"/><circle cx="123.7" cy="102.1" r="1.6" fill="#7A725F"/><circle cx="128.6" cy="94.4" r="1.6" fill="#7A725F"/><circle cx="135.2" cy="88.7" r="1.6" fill="#7A725F"/><circle cx="137.5" cy="59.4" r="1.6" fill="#7A725F"/><circle cx="148.7" cy="57.6" r="1.6" fill="#7A725F"/><path d="M160 165 L132.0 60.7 A108 108 0 0 1 188.0 60.7 Z" fill="#FDE04F" fill-opacity=".14" stroke="#FDE04F" stroke-width="1.5"/><ellipse cx="160" cy="54" rx="22" ry="12" fill="#FDE04F"/><text x="190" y="50" font-size="12" fill="#FDE04F" font-family="JetBrains Mono,monospace">you</text><circle cx="160" cy="165" r="7" fill="#F5EDD0"/><text x="176" y="170" font-size="12" fill="#B6AD97" font-family="JetBrains Mono,monospace">±15°</text></svg></div></div>
+      <div class="card st rv"><p class="no">04 · Clean</p><h3>Remove the jitter</h3><div class="fx">6 Hz Butterworth low-pass · fill if vis &lt; 0.5</div><p>Raw joints shake. A low-pass filter smooths every joint, and joints the camera briefly loses are filled from their neighbours.</p><div class="dia"><svg viewBox="0 0 260 120"><path d="M10.0,56.8 L14.0,56.8 L18.0,68.9 L22.0,61.5 L26.0,72.7 L30.0,72.4 L34.0,69.4 L38.0,79.8 L42.0,73.4 L46.0,82.4 L50.0,77.4 L54.0,78.9 L58.0,85.9 L62.0,93.7 L66.0,81.2 L70.0,82.9 L74.0,89.7 L78.0,94.7 L82.0,86.8 L86.0,82.2 L90.0,90.8 L94.0,72.1 L98.0,84.4 L102.0,71.7 L106.0,66.4 L110.0,63.1 L114.0,63.6 L118.0,69.6 L122.0,55.1 L126.0,59.2 L130.0,57.2 L134.0,49.4 L138.0,49.6 L142.0,38.1 L146.0,35.4 L150.0,35.7 L154.0,42.1 L158.0,35.6 L162.0,32.0 L166.0,35.5 L170.0,32.2 L174.0,28.7 L178.0,37.3 L182.0,35.6 L186.0,27.8 L190.0,34.5 L194.0,34.6 L198.0,42.3 L202.0,41.4 L206.0,35.4 L210.0,50.0 L214.0,36.9 L218.0,45.0 L222.0,53.9 L226.0,45.9 L230.0,55.0 L234.0,50.0 L238.0,64.4 L242.0,69.3 L246.0,68.8 L250.0,77.2" fill="none" stroke="#7A725F" stroke-width="1.3"/><path d="M10.0,60.0 L14.0,63.1 L18.0,66.2 L22.0,69.2 L26.0,72.0 L30.0,74.8 L34.0,77.3 L38.0,79.6 L42.0,81.7 L46.0,83.6 L50.0,85.1 L54.0,86.3 L58.0,87.2 L62.0,87.8 L66.0,88.0 L70.0,87.9 L74.0,87.4 L78.0,86.6 L82.0,85.5 L86.0,84.0 L90.0,82.3 L94.0,80.2 L98.0,78.0 L102.0,75.5 L106.0,72.8 L110.0,70.0 L114.0,67.0 L118.0,64.0 L122.0,60.9 L126.0,57.7 L130.0,54.7 L134.0,51.6 L138.0,48.7 L142.0,46.0 L146.0,43.4 L150.0,41.0 L154.0,38.8 L158.0,36.9 L162.0,35.3 L166.0,34.0 L170.0,33.0 L174.0,32.3 L178.0,32.0 L182.0,32.1 L186.0,32.4 L190.0,33.2 L194.0,34.2 L198.0,35.6 L202.0,37.2 L206.0,39.2 L210.0,41.4 L214.0,43.8 L218.0,46.4 L222.0,49.2 L226.0,52.2 L230.0,55.2 L234.0,58.3 L238.0,61.4 L242.0,64.5 L246.0,67.5 L250.0,70.5" fill="none" stroke="#FDE04F" stroke-width="2.5" stroke-linecap="round"/><text x="12" y="16" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace">raw</text><text x="60" y="16" font-size="11" fill="#FDE04F" font-family="JetBrains Mono,monospace">filtered</text></svg></div></div>
+      <div class="card st rv"><p class="no">05 · Angles</p><h3>Measure every joint</h3><div class="fx">θ = arccos( <em>BA</em>·<em>BC</em> ÷ |<em>BA</em>||<em>BC</em>| )</div><p>The angle at each joint from the vectors to its neighbours, in real 3D millimetres once depth is fused in.</p><div class="dia"><svg viewBox="0 0 320 180"><path d="M110 26 L178 96 L128 158" stroke="#F5EDD0" stroke-width="4" stroke-linecap="round" fill="none" opacity=".85"/><circle cx="110" cy="26" r="7" fill="#0A0907" stroke="#FDE04F" stroke-width="2.5"/><circle cx="178" cy="96" r="7" fill="#0A0907" stroke="#FDE04F" stroke-width="2.5"/><circle cx="128" cy="158" r="7" fill="#0A0907" stroke="#FDE04F" stroke-width="2.5"/><path d="M150 67 A40 40 0 0 0 151 126" stroke="#FDE04F" stroke-width="2" fill="none"/><text x="126" y="102" font-size="15" fill="#FDE04F" font-family="JetBrains Mono,monospace">θ</text><text x="88" y="24" font-size="12" fill="#B6AD97" font-family="JetBrains Mono,monospace">hip A</text><text x="192" y="100" font-size="12" fill="#B6AD97" font-family="JetBrains Mono,monospace">knee B</text><text x="140" y="172" font-size="12" fill="#B6AD97" font-family="JetBrains Mono,monospace">ankle C</text></svg></div></div>
+      <div class="card st rv"><p class="no">06 · Classify</p><h3>Know the exercise</h3><div class="fx">22 features → BiLSTM → label</div><p>Beyond rules: a bidirectional LSTM reads a window of 22 movement features and names the exercise. Tested in the standalone analyser.</p><div class="dia"><svg viewBox="0 0 320 180"><rect x="30" y="118" width="30" height="34" rx="7" fill="#F5EDD0" fill-opacity=".08" stroke="rgba(245,237,208,.13)"/><rect x="30" y="64" width="30" height="30" rx="8" fill="#FDE04F" fill-opacity=".14" stroke="rgba(253,224,79,.5)"/><path d="M45 118v-24" stroke="#7A725F"/><path d="M60 74h16" stroke="#FDE04F" stroke-width="1.5"/><path d="M76 86h-16" stroke="#B6AD97" stroke-width="1.5"/><rect x="76" y="118" width="30" height="34" rx="7" fill="#F5EDD0" fill-opacity=".08" stroke="rgba(245,237,208,.13)"/><rect x="76" y="64" width="30" height="30" rx="8" fill="#FDE04F" fill-opacity=".14" stroke="rgba(253,224,79,.5)"/><path d="M91 118v-24" stroke="#7A725F"/><path d="M106 74h16" stroke="#FDE04F" stroke-width="1.5"/><path d="M122 86h-16" stroke="#B6AD97" stroke-width="1.5"/><rect x="122" y="118" width="30" height="34" rx="7" fill="#F5EDD0" fill-opacity=".08" stroke="rgba(245,237,208,.13)"/><rect x="122" y="64" width="30" height="30" rx="8" fill="#FDE04F" fill-opacity=".14" stroke="rgba(253,224,79,.5)"/><path d="M137 118v-24" stroke="#7A725F"/><path d="M152 74h16" stroke="#FDE04F" stroke-width="1.5"/><path d="M168 86h-16" stroke="#B6AD97" stroke-width="1.5"/><rect x="168" y="118" width="30" height="34" rx="7" fill="#F5EDD0" fill-opacity=".08" stroke="rgba(245,237,208,.13)"/><rect x="168" y="64" width="30" height="30" rx="8" fill="#FDE04F" fill-opacity=".14" stroke="rgba(253,224,79,.5)"/><path d="M183 118v-24" stroke="#7A725F"/><path d="M198 74h16" stroke="#FDE04F" stroke-width="1.5"/><path d="M214 86h-16" stroke="#B6AD97" stroke-width="1.5"/><rect x="214" y="118" width="30" height="34" rx="7" fill="#F5EDD0" fill-opacity=".08" stroke="rgba(245,237,208,.13)"/><rect x="214" y="64" width="30" height="30" rx="8" fill="#FDE04F" fill-opacity=".14" stroke="rgba(253,224,79,.5)"/><path d="M229 118v-24" stroke="#7A725F"/><path d="M244 74h16" stroke="#FDE04F" stroke-width="1.5"/><path d="M260 86h-16" stroke="#B6AD97" stroke-width="1.5"/><rect x="260" y="118" width="30" height="34" rx="7" fill="#F5EDD0" fill-opacity=".08" stroke="rgba(245,237,208,.13)"/><rect x="260" y="64" width="30" height="30" rx="8" fill="#FDE04F" fill-opacity=".14" stroke="rgba(253,224,79,.5)"/><path d="M275 118v-24" stroke="#7A725F"/><text x="30" y="170" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace">22 features × frames</text><rect x="108" y="16" width="104" height="28" rx="14" fill="#FDE04F"/><text x="160" y="34" text-anchor="middle" font-size="12" font-weight="600" fill="#16130a" font-family="Inter,system-ui,sans-serif">"Squat"</text><path d="M160 44v20" stroke="#FDE04F" stroke-width="1.5"/></svg></div></div>
+    </div>
+    <div class="wide2">
+      <div class="card wc rv"><h3>Counting reps: a state machine</h3><p>Knee angle below 100° means you're down. Back above 160° means one rep. Nothing in between counts, so half-reps and wobbles don't.</p><div class="scrollx"><svg viewBox="0 0 880 214" role="img" aria-label="Illustrative knee-angle trace: four dips below 100 degrees, each counted as a rep when the angle returns above 160 degrees"><text x="30" y="184" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">60°</text><text x="30" y="131" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">100°</text><text x="30" y="77" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">140°</text><text x="30" y="24" text-anchor="end" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">180°</text><line x1="40" x2="860" y1="46.7" y2="46.7" stroke="#4ADE80" stroke-dasharray="5 5" opacity=".8"/><text x="48" y="40" font-size="11" fill="#4ADE80" font-family="JetBrains Mono,monospace">up · 160°</text><line x1="40" x2="860" y1="126.7" y2="126.7" stroke="#FDE04F" stroke-dasharray="5 5" opacity=".8"/><text x="48" y="143" font-size="11" fill="#FDE04F" font-family="JetBrains Mono,monospace">down · 100°</text><path d="M40.0,30.7 L44.1,30.8 L48.2,30.8 L52.3,30.9 L56.4,31.0 L60.5,31.2 L64.6,31.4 L68.7,31.7 L72.8,32.1 L76.9,32.7 L81.0,33.4 L85.1,34.4 L89.2,35.6 L93.3,37.3 L97.4,39.3 L101.5,41.8 L105.6,44.8 L109.7,48.4 L113.8,52.6 L117.9,57.5 L122.0,63.1 L126.1,69.3 L130.2,76.1 L134.3,83.5 L138.4,91.2 L142.5,99.2 L146.6,107.2 L150.7,115.0 L154.8,122.5 L158.9,129.3 L163.0,135.2 L167.1,140.1 L171.2,143.7 L175.3,145.9 L179.4,146.7 L183.5,145.9 L187.6,143.7 L191.7,140.1 L195.8,135.2 L199.9,129.3 L204.0,122.5 L208.1,115.0 L212.2,107.2 L216.3,99.2 L220.4,91.2 L224.5,83.5 L228.6,76.2 L232.7,69.4 L236.8,63.2 L240.9,57.7 L245.0,52.9 L249.1,48.9 L253.2,45.5 L257.3,42.8 L261.4,40.7 L265.5,39.2 L269.6,38.4 L273.7,38.1 L277.8,38.4 L281.9,39.2 L286.0,40.7 L290.1,42.8 L294.2,45.5 L298.3,48.9 L302.4,52.9 L306.5,57.7 L310.6,63.2 L314.7,69.4 L318.8,76.2 L322.9,83.5 L327.0,91.2 L331.1,99.2 L335.2,107.2 L339.3,115.0 L343.4,122.5 L347.5,129.3 L351.6,135.2 L355.7,140.1 L359.8,143.7 L363.9,145.9 L368.0,146.7 L372.1,145.9 L376.2,143.7 L380.3,140.1 L384.4,135.2 L388.5,129.3 L392.6,122.5 L396.7,115.0 L400.8,107.2 L404.9,99.2 L409.0,91.2 L413.1,83.5 L417.2,76.2 L421.3,69.4 L425.4,63.2 L429.5,57.7 L433.6,52.9 L437.7,48.9 L441.8,45.5 L445.9,42.8 L450.0,40.7 L454.1,39.2 L458.2,38.4 L462.3,38.1 L466.4,38.4 L470.5,39.2 L474.6,40.7 L478.7,42.8 L482.8,45.5 L486.9,48.9 L491.0,52.9 L495.1,57.7 L499.2,63.2 L503.3,69.4 L507.4,76.2 L511.5,83.5 L515.6,91.2 L519.7,99.2 L523.8,107.2 L527.9,115.0 L532.0,122.5 L536.1,129.3 L540.2,135.2 L544.3,140.1 L548.4,143.7 L552.5,145.9 L556.6,146.7 L560.7,145.9 L564.8,143.7 L568.9,140.1 L573.0,135.2 L577.1,129.3 L581.2,122.5 L585.3,115.0 L589.4,107.2 L593.5,99.2 L597.6,91.2 L601.7,83.5 L605.8,76.2 L609.9,69.4 L614.0,63.2 L618.1,57.7 L622.2,52.9 L626.3,48.9 L630.4,45.5 L634.5,42.8 L638.6,40.7 L642.7,39.2 L646.8,38.4 L650.9,38.1 L655.0,38.4 L659.1,39.2 L663.2,40.7 L667.3,42.8 L671.4,45.5 L675.5,48.9 L679.6,52.9 L683.7,57.7 L687.8,63.2 L691.9,69.4 L696.0,76.2 L700.1,83.5 L704.2,91.2 L708.3,99.2 L712.4,107.2 L716.5,115.0 L720.6,122.5 L724.7,129.3 L728.8,135.2 L732.9,140.1 L737.0,143.7 L741.1,145.9 L745.2,146.7 L749.3,145.9 L753.4,143.7 L757.5,140.1 L761.6,135.2 L765.7,129.3 L769.8,122.5 L773.9,115.0 L778.0,107.2 L782.1,99.2 L786.2,91.2 L790.3,83.5 L794.4,76.1 L798.5,69.3 L802.6,63.1 L806.7,57.5 L810.8,52.6 L814.9,48.4 L819.0,44.8 L823.1,41.8 L827.2,39.3 L831.3,37.3 L835.4,35.6 L839.5,34.4 L843.6,33.4 L847.7,32.7 L851.8,32.1 L855.9,31.7 L860.0,31.4" fill="none" stroke="#F5EDD0" stroke-width="2.5" stroke-linejoin="round"/><circle cx="253" cy="45" r="11" fill="#FDE04F"/><text x="253" y="49" text-anchor="middle" font-size="11.5" font-weight="700" fill="#16130a" font-family="Inter,system-ui,sans-serif">1</text><circle cx="442" cy="45" r="11" fill="#FDE04F"/><text x="442" y="49" text-anchor="middle" font-size="11.5" font-weight="700" fill="#16130a" font-family="Inter,system-ui,sans-serif">2</text><circle cx="630" cy="45" r="11" fill="#FDE04F"/><text x="630" y="49" text-anchor="middle" font-size="11.5" font-weight="700" fill="#16130a" font-family="Inter,system-ui,sans-serif">3</text><circle cx="819" cy="45" r="11" fill="#FDE04F"/><text x="819" y="49" text-anchor="middle" font-size="11.5" font-weight="700" fill="#16130a" font-family="Inter,system-ui,sans-serif">4</text><text x="40" y="206" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">Knee angle over 10 seconds of squats (illustrative trace)</text></svg></div></div>
+      <div class="card wc rv"><h3>Scoring form: 100, minus mistakes</h3><p>Every frame starts at 100 and loses points for each rule broken. Form % is the average of the last 20 frames. These are the squat rules.</p>
+        <div class="wf"><svg viewBox="0 0 520 210" role="img" aria-label="Form score example: start at 100, minus 15 for not deep enough, minus 10 for leaning, equals 75"><rect x="30" y="18.0" width="88" height="152.0" rx="8" fill="#F5EDD0" fill-opacity="0.22"/><text x="74.0" y="11.0" text-anchor="middle" font-size="13" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">100</text><text x="74.0" y="196" text-anchor="middle" font-size="11.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">Start</text><line x1="118" x2="158" y1="18.0" y2="18.0" stroke="#7A725F" stroke-dasharray="3 3"/><rect x="158" y="18.0" width="88" height="22.8" rx="8" fill="#E84040" fill-opacity="0.9"/><text x="202.0" y="11.0" text-anchor="middle" font-size="13" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">-15</text><text x="202.0" y="196" text-anchor="middle" font-size="11.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">Not deep</text><line x1="246" x2="286" y1="40.8" y2="40.8" stroke="#7A725F" stroke-dasharray="3 3"/><rect x="286" y="40.8" width="88" height="15.2" rx="8" fill="#E84040" fill-opacity="0.9"/><text x="330.0" y="33.8" text-anchor="middle" font-size="13" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">-10</text><text x="330.0" y="196" text-anchor="middle" font-size="11.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">Leaning</text><line x1="374" x2="414" y1="56.0" y2="56.0" stroke="#7A725F" stroke-dasharray="3 3"/><rect x="414" y="56.0" width="88" height="114.0" rx="8" fill="#FDE04F" fill-opacity="0.9"/><text x="458.0" y="49.0" text-anchor="middle" font-size="13" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">75</text><text x="458.0" y="196" text-anchor="middle" font-size="11.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">Frame score</text></svg>
+        <div class="rules"><div>Not deep enough (knee &gt; 110° at the bottom)<b>−15</b></div><div>Slight forward lean (torso &gt; 40°)<b>−10</b></div><div>Back rounding (torso &gt; 50°)<b>−25</b></div><div>Knees caving (knee gap ÷ hip gap &lt; 0.7)<b>−30</b></div><div>Hip shift (&gt; 8°)<b>−15</b></div></div></div>
+      </div>
+    </div>
+    <div class="proof">
+      <div class="panel vid9 rv"><video data-loop src="vid/loop-form.mp4" poster="vid/loop-form.jpg" muted loop playsinline preload="none"></video><div class="tag"><b></b>The maths, live on the mirror</div></div>
+      <div style="display:grid;gap:16px;align-content:start">
+        <div class="panel vid16 rv"><video data-loop src="vid/lidar.mp4" poster="vid/lidar.jpg" muted loop playsinline preload="none"></video><div class="tag"><b></b>YDLIDAR X2L, spinning</div></div>
+        <figure class="card rv"><img src="img/goblet-skel.webp" alt="Concept: a woman holding a kettlebell beside the 3D skeleton the mirror sees" loading="lazy" style="width:100%;height:auto"></figure>
+      </div>
+      <div class="card note rv"><h3>Why the extra sensor was worth it</h3><p>Depth turns a form score from a guess into a measurement. Squat depth and knee travel are exactly the errors that injure people, and exactly what 2D can't see.</p><p><b style="color:var(--t1);font-weight:500">Trade-off:</b> one more sensor, its own 5 V supply, and calibration. The LiDAR sits at the camera's height, 85–90 cm off the floor.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ COACH ═════════ -->
+<section class="sec tight" id="coach">
+  <div class="wrap">
+    <p class="eyebrow rv">The coach</p>
+    <h2 class="rv">Aryan. <span class="dim">An LLM that sees your form.</span></h2>
+    <p class="lede rv">With no screen to tap, the voice is the interface. Aryan speaks the user's own vernacular (Hinglish, on this project), direct and warm, like a good trainer at your local gym.</p>
+    <div class="pipe rv"><span>Silence detection <small>VAD</small></span><i>→</i><span>Speech to text <small>Whisper v3 Turbo</small></span><i>→</i><span class="g">Understand + coach <small>GPT-4o</small></span><i>→</i><span>Voice <small>ElevenLabs</small></span></div>
+    <div class="coach">
+      <div class="card chat rv">
+        <p class="label">Real lines from the prototype</p>
+        <div class="msg"><span class="av"></span><div class="bub"><small>Morning Pulse</small>Good morning, Anurag! How did you sleep after that killer session yesterday?</div></div>
+        <div class="msg"><span class="av"></span><div class="bub"><small>Plan Review</small>Hey Anurag, swapped KB Clean and Press with Neck Mobility Flow for you, since your neck's been tight.</div></div>
+        <div class="msg"><span class="av"></span><div class="bub"><small>Session</small>First set. Bodyweight squats. Show me clean reps.</div></div>
+        <div class="msg"><span class="av"></span><div class="bub"><small>Recap</small>Clean work. That's how it's done.</div></div>
+      </div>
+      <div class="card knows rv">
+        <h3>What Aryan knows when he speaks</h3>
+        <ul><li>Your profile: goal, level, bells, days per week</li><li>Today's plan and every change you made to it</li><li>Your last sessions and how they went</li><li>Live reps and your form score, right now</li><li>What you just said, and which screen you're on</li></ul>
+        <div class="sp2"></div>
+        <p class="label">Navigation is voice too</p>
+        <div class="cmds"><span>"Let's go"</span><span>"Swap this"</span><span>"Easier"</span><span>"Show me"</span><span>"Hold on"</span><span>"I'm done"</span></div>
+      </div>
+    </div>
+    <p class="label rv" style="margin-top:56px">Decision · three voices, one rule</p>
+    <div class="cols3" style="margin-top:16px">
+      <div class="rv"><h4>Problem</h4><p>When the system and the coach share one voice, people can't tell setup from training. Is this a menu or my trainer?</p></div>
+      <div class="rv call"><h4><i>●</i> The call</h4><p>Three voices, one rule. Kria, a blue orb, is the system and only speaks at first launch. Aryan, a gold orb, is the coach. Tara is the alternative coach.</p></div>
+      <div class="rv"><h4>Trade-off</h4><p>Two characters to keep consistent in every line, written and generated. The orb always shows idle, listening or speaking.</p></div>
+    </div>
+    <div class="voices">
+      <div class="card vc rv"><div class="scr"><img src="img/s/onboarding_kriya.webp" alt="Kria system screen: blue orb" loading="lazy"></div><div><h4><span class="d" style="background:var(--blue)"></span>Kria · system</h4><p>Introduces the mirror and sets you up. Then steps aside.</p></div></div>
+      <div class="card vc rv"><div class="scr"><img src="img/s/morning_pulse.webp" alt="Morning Pulse screen: Aryan's gold orb asking about energy" loading="lazy"></div><div><h4><span class="d" style="background:var(--gold)"></span>Aryan · coach</h4><p>Checks in, plans, counts, corrects, cheers. Hinglish by default.</p></div></div>
+      <div class="card vc rv"><div class="scr"><img src="img/s/onboarding_profile_card.webp" alt="Profile card where the coach is picked" loading="lazy"></div><div><h4><span class="d" style="background:#f2a5c0"></span>Tara · coach</h4><p>The alternative coach, picked at onboarding. Same brain, different personality.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ KRIA SYSTEM ═════════ -->
+<section class="sec tight" id="system">
+  <div class="wrap">
+    <p class="eyebrow rv">The Kria system</p>
+    <h2 class="rv">Proven kettlebell science. <span class="dim">My system around it.</span></h2>
+    <p class="lede rv">The daily practice is built on established kettlebell training. What I designed is everything that makes it adapt: the periodization, the progression rules and a plan that bends instead of breaking.</p>
+    <div class="method">
+      <div class="card mt rv"><div class="k">1 fast lift</div><p>An explosive lift for power and conditioning.</p></div>
+      <div class="card mt rv"><div class="k">1 slow lift</div><p>A slow, controlled lift for strength and mobility.</p></div>
+      <div class="card mt rv"><div class="k">&lt; 30 min</div><p>One kettlebell. Every day. Built to be a habit, not an event.</p></div>
+    </div>
+    <div class="sys">
+      <div class="card wc rv full"><div class="pgrid"><div><h3>8-week periodized block</h3><p>Volume comes down as the bell gets heavier. Weeks 4 and 8 are lighter (half volume, same load) so the body consolidates instead of breaking down.</p></div><div class="scrollx"><svg viewBox="0 0 640 250" role="img" aria-label="Eight-week block: weekly volume falls from about 52 reps per exercise to 27 while the bell steps from light to medium to heavy; weeks 4 and 8 are half-volume deloads"><defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#60C8FF" stroke-width="2.2"/></pattern></defs><line x1="46" x2="594" y1="186.0" y2="186.0" stroke="rgba(245,237,208,.13)" stroke-dasharray="2 4"/><text x="38" y="190.0" text-anchor="end" font-size="10.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">0</text><line x1="46" x2="594" y1="125.6" y2="125.6" stroke="rgba(245,237,208,.13)" stroke-dasharray="2 4"/><text x="38" y="129.6" text-anchor="end" font-size="10.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">20</text><line x1="46" x2="594" y1="65.3" y2="65.3" stroke="rgba(245,237,208,.13)" stroke-dasharray="2 4"/><text x="38" y="69.3" text-anchor="end" font-size="10.5" fill="#7A725F" font-family="Inter,system-ui,sans-serif">40</text><rect x="59.7" y="27.5" width="41.1" height="158.5" rx="6" fill="#F5EDD0" fill-opacity="0.22"/><text x="80.2" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W1</text><rect x="128.2" y="27.5" width="41.1" height="158.5" rx="6" fill="#F5EDD0" fill-opacity="0.22"/><text x="148.8" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W2</text><rect x="196.7" y="53.2" width="41.1" height="132.8" rx="6" fill="#F5EDD0" fill-opacity="0.22"/><text x="217.2" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W3</text><rect x="265.2" y="119.6" width="41.1" height="66.4" rx="6" fill="url(#hatch)" fill-opacity="1"/><text x="285.8" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W4</text><rect x="333.7" y="101.5" width="41.1" height="84.5" rx="6" fill="#F5EDD0" fill-opacity="0.22"/><text x="354.2" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W5</text><rect x="402.2" y="101.5" width="41.1" height="84.5" rx="6" fill="#F5EDD0" fill-opacity="0.22"/><text x="422.8" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W6</text><rect x="470.7" y="103.0" width="41.1" height="83.0" rx="6" fill="#F5EDD0" fill-opacity="0.22"/><text x="491.2" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W7</text><rect x="539.2" y="144.5" width="41.1" height="41.5" rx="6" fill="url(#hatch)" fill-opacity="1"/><text x="559.8" y="202.0" text-anchor="middle" font-size="11" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">W8</text><path d="M46.0,137.2 L114.5,137.2 L114.5,137.2 L183.0,137.2 L183.0,88.4 L251.5,88.4 L251.5,88.4 L320.0,88.4 L320.0,88.4 L388.5,88.4 L388.5,88.4 L457.0,88.4 L457.0,39.5 L525.5,39.5 L525.5,39.5 L594.0,39.5" fill="none" stroke="#FDE04F" stroke-width="2.6"/><text x="602" y="141.2" font-size="10.5" fill="#FDE04F" font-family="Inter,system-ui,sans-serif">Light</text><text x="602" y="92.4" font-size="10.5" fill="#FDE04F" font-family="Inter,system-ui,sans-serif">Medium</text><text x="602" y="43.5" font-size="10.5" fill="#FDE04F" font-family="Inter,system-ui,sans-serif">Heavy</text><text x="114.5" y="224" text-anchor="middle" font-size="12" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Stabilise</text><text x="114.5" y="240" text-anchor="middle" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace">3 × 15–20</text><text x="251.5" y="224" text-anchor="middle" font-size="12" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Build</text><text x="251.5" y="240" text-anchor="middle" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace">4 × 10–12</text><text x="388.5" y="224" text-anchor="middle" font-size="12" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Strength</text><text x="388.5" y="240" text-anchor="middle" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace">4 × 6–8</text><text x="525.5" y="224" text-anchor="middle" font-size="12" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Peak</text><text x="525.5" y="240" text-anchor="middle" font-size="11" fill="#7A725F" font-family="JetBrains Mono,monospace">5 × 5–6</text></svg><div class="legend" style="margin-top:10px"><span><b style="background:rgba(245,237,208,.3)"></b>Reps per exercise</span><span><b style="background:#60C8FF"></b>Lighter week, half volume</span><span><b style="background:#FDE04F"></b>Bell</span></div></div></div></div>
+        <div class="card wc rv"><h3>3-bell progression, gated by form</h3><p>You only move up a bell when your form holds at 85% or more for three sessions in a row. Strength follows technique.</p>
+          <div class="bells"><div class="s"><i>✓</i><i>✓</i><i>✓</i></div><span class="hint">≥ 85% form × 3 sessions → next bell</span></div>
+          <div class="kb"><div><svg width="34" height="37" viewBox="0 0 40 44"><path d="M12 14a8 8 0 0116 0" fill="none" stroke="rgba(245,237,208,.35)" stroke-width="3.2"/><circle cx="20" cy="28" r="14" fill="rgba(245,237,208,.35)" fill-opacity="0.25"/></svg><span>16 kg</span></div><div class="on"><svg width="44" height="48" viewBox="0 0 40 44"><path d="M12 14a8 8 0 0116 0" fill="none" stroke="#FDE04F" stroke-width="3.2"/><circle cx="20" cy="28" r="14" fill="#FDE04F" fill-opacity="0.9"/></svg><span>24 kg</span></div><div><svg width="54" height="59" viewBox="0 0 40 44"><path d="M12 14a8 8 0 0116 0" fill="none" stroke="rgba(245,237,208,.35)" stroke-width="3.2"/><circle cx="20" cy="28" r="14" fill="rgba(245,237,208,.35)" fill-opacity="0.25"/></svg><span>32 kg</span></div><span class="hint" style="margin-left:6px;align-self:center">Men / general set.<br>8 · 12 · 16 kg set for lighter starts.</span></div>
+        </div>
+        <div class="card wc rv"><h3>A plan that bends</h3><p>Daily changes sit on top of the plan as their own layer, so skipping or swapping never breaks it.</p>
+          <div class="diff"><div><span>8-week plan</span><small>source of truth</small></div><div class="lay"><span>+ today's changes</span><small>skip · easier · swap · weight</small></div><div><span>= today's session</span><small>merged live</small></div></div>
+          <p style="margin-top:12px">If more than 40% of a week changes, Kria offers to rebuild the plan from that week.</p>
+        </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ EXPERIENCE ═════════ -->
+<section class="sec tight" id="flow">
+  <div class="wrap" style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:16px">
+    <div><p class="eyebrow rv">The experience</p><h2 class="rv">A morning with Kria.</h2></div>
+    <p class="hint rv">Drag or scroll →</p>
+  </div>
+  <div class="strip" id="strip" tabindex="0" aria-label="A morning with Kria, screen by screen">
+    <div class="stop"><div class="scr"><img src="img/s/standby.webp" alt="Standby screen" loading="lazy"></div><p class="tm">06:58</p><h5>Standby</h5><p>Just a mirror. Wave, or say &quot;Hey Aryan&quot;.</p></div><div class="stop"><div class="scr"><img src="img/s/morning_pulse.webp" alt="Morning Pulse screen" loading="lazy"></div><p class="tm">07:00</p><h5>Morning Pulse</h5><p>Aryan checks in: sleep, energy, soreness.</p></div><div class="stop"><div class="scr"><img src="img/s/the_deck_v4.webp" alt="The Deck screen" loading="lazy"></div><p class="tm">07:01</p><h5>The Deck</h5><p>Home. Today&#x27;s plan, one &quot;let&#x27;s go&quot; away.</p></div><div class="stop"><div class="scr"><img src="img/s/blueprint.webp" alt="Blueprint screen" loading="lazy"></div><p class="tm">07:01</p><h5>Blueprint</h5><p>Today&#x27;s session, laid out.</p></div><div class="stop"><div class="scr"><img src="img/s/plan_review2.webp" alt="Plan Review screen" loading="lazy"></div><p class="tm">07:02</p><h5>Plan Review</h5><p>Skip it, easier, swap this, next. Silence keeps it.</p></div><div class="stop"><div class="scr"><img src="img/s/countdown.webp" alt="On Deck screen" loading="lazy"></div><p class="tm">07:03</p><h5>On Deck</h5><p>Three, two, one. Pick up the bell.</p></div><div class="stop"><div class="scr"><img src="img/s/solo_session_v5.webp" alt="Session screen" loading="lazy"></div><p class="tm">07:04</p><h5>Session</h5><p>Reps, form and heart rate at the edges. You in the middle.</p></div><div class="stop"><div class="scr"><img src="img/s/breathe_v4.webp" alt="Breathe screen" loading="lazy"></div><p class="tm">07:09</p><h5>Breathe</h5><p>Rest, timed and paced.</p></div><div class="stop"><div class="scr"><img src="img/s/recap.webp" alt="Recap screen" loading="lazy"></div><p class="tm">07:10</p><h5>Recap</h5><p>A form score and one line of coaching.</p></div><div class="stop"><div class="scr"><img src="img/s/the_wrap.webp" alt="The Wrap screen" loading="lazy"></div><p class="tm">07:29</p><h5>The Wrap</h5><p>The session in one glance. Same time tomorrow.</p></div>
+  </div>
+  <div class="wrap">
+    <div class="canvas flow rv"><svg viewBox="0 0 1560 572" role="img" aria-label="Experience flow: Standby, Morning Pulse, The Deck, then Blueprint and Plan Review into the workout loop of On Deck, Session, Coach mode, Breathe and Recap, ending at The Wrap; side doors to Studio, Journey, Duo and Profile"><defs><pattern id="dg1560" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="1.2" cy="1.2" r="1.2" fill="rgba(245,237,208,.09)"/></pattern></defs><rect width="1560" height="572" fill="url(#dg1560)"/><rect x="1126" y="34" width="216" height="502" rx="22" fill="rgba(253,224,79,.035)" stroke="rgba(253,224,79,.35)" stroke-dasharray="6 6"/><text x="1142" y="556" font-size="11" fill="#FDE04F" font-family="JetBrains Mono,monospace" letter-spacing=".08em">WORKOUT LOOP  ↺ next set · next exercise</text><path d="M196,297.0 C226,297.0 208,185.0 238,185.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="196" cy="297.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="238" cy="185.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><rect x="177" y="231" width="80" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="217" y="244" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Hey Aryan&quot;</text><path d="M196,297.0 C276,297.0 376,297.0 456,297.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3" stroke-dasharray="5 5"/><circle cx="196" cy="297.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="456" cy="297.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="286" y="309" width="80" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="326" y="322" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">return wake</text><path d="M414,185.0 C444,185.0 426,297.0 456,297.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="414" cy="185.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="456" cy="297.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M632,297.0 C662,297.0 660,75.0 690,75.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="632" cy="297.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="690" cy="75.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><rect x="629" y="137" width="74" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="666" y="150" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Let&#x27;s go&quot;</text><path d="M632,297.0 C662,297.0 660,193.0 690,193.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="632" cy="297.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="690" cy="193.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="635" y="217" width="62" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="666" y="230" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Studio&quot;</text><path d="M632,297.0 C662,297.0 660,311.0 690,311.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="632" cy="297.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="690" cy="311.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="632" y="296" width="68" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="666" y="310" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Journey&quot;</text><path d="M632,297.0 C662,297.0 660,429.0 690,429.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="632" cy="297.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="690" cy="429.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="645" y="376" width="43" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="666" y="390" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Duo&quot;</text><path d="M632,297.0 C662,297.0 660,547.0 690,547.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="632" cy="297.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="690" cy="547.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="632" y="456" width="68" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="666" y="470" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Profile&quot;</text><path d="M866,75.0 C896,75.0 876,75.0 906,75.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="866" cy="75.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="906" cy="75.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M866,193.0 C896,193.0 876,193.0 906,193.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="866" cy="193.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="906" cy="193.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M866,311.0 C896,311.0 876,311.0 906,311.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="866" cy="311.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="906" cy="311.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M866,429.0 C896,429.0 876,429.0 906,429.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="866" cy="429.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="906" cy="429.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M1082,75.0 C1112,75.0 1116,95.0 1146,95.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="1082" cy="75.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="1146" cy="95.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><rect x="1087" y="72" width="43" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="1109" y="86" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">begin</text><path d="M1082,193.0 C1112,193.0 1116,95.0 1146,95.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3" stroke-dasharray="5 5"/><circle cx="1082" cy="193.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="1146" cy="95.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="1075" y="149" width="68" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="1109" y="162" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Play it&quot;</text><path d="M1082,311.0 C1112,311.0 1116,95.0 1146,95.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3" stroke-dasharray="5 5"/><circle cx="1082" cy="311.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="1146" cy="95.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M1082,429.0 C1112,429.0 1116,95.0 1146,95.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3" stroke-dasharray="5 5"/><circle cx="1082" cy="429.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="1146" cy="95.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M1234.0,130 C1234.0,154 1234.0,132 1234.0,156" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="1234.0" cy="130" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="1234.0" cy="156" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M1234.0,226 C1234.0,250 1234.0,228 1234.0,252" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3" stroke-dasharray="5 5"/><circle cx="1234.0" cy="226" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="1234.0" cy="252" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="1200" y="229" width="68" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="1234" y="242" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Show me&quot;</text><path d="M1234.0,322 C1234.0,346 1234.0,324 1234.0,348" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3"/><circle cx="1234.0" cy="322" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="1234.0" cy="348" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M1292,226 C1332,286 1332,288 1292,348" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="1292" cy="226" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="1292" cy="348" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M1234.0,418 C1234.0,442 1234.0,420 1234.0,444" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="1234.0" cy="418" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="1234.0" cy="444" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><path d="M1146,479.0 C1076,479.0 1076,95.0 1146,95.0" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3" stroke-dasharray="5 5"/><circle cx="1146" cy="479.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="1146" cy="95.0" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><path d="M1322,479.0 C1352,479.0 1340,297.0 1370,297.0" fill="none" stroke="#FDE04F" stroke-width="1.8"/><circle cx="1322" cy="479.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><circle cx="1370" cy="297.0" r="4" fill="#0A0907" stroke="#FDE04F" stroke-width="1.6"/><rect x="1307" y="322" width="93" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="1353" y="335" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">last exercise</text><path d="M1458.0,332 C1458.0,582 544.0,582 544.0,332" fill="none" stroke="rgba(245,237,208,.30)" stroke-width="1.3" stroke-dasharray="5 5"/><circle cx="1458.0" cy="332" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><circle cx="544.0" cy="332" r="4" fill="#0A0907" stroke="rgba(245,237,208,.30)" stroke-width="1.6"/><rect x="952" y="472" width="99" height="20" rx="10" fill="#0A0907" stroke="rgba(245,237,208,.13)"/><text x="1001" y="486" text-anchor="middle" font-size="10.5" fill="#B6AD97" font-family="JetBrains Mono,monospace">&quot;Take me home&quot;</text><g><rect x="20" y="262" width="176" height="86" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="32" y="275" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="44" cy="287" r="4.2" fill="#FDE04F"/><text x="66" y="286" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Standby</text><text x="66" y="303" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">mirror off</text><rect x="32" y="323" width="82" height="17" rx="8.5" fill="#B6AD97" fill-opacity=".14"/><text x="73" y="335" text-anchor="middle" font-size="10" fill="#B6AD97" font-family="Inter,system-ui,sans-serif">wave / voice</text></g><g><rect x="238" y="150" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="250" y="163" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="262" cy="175" r="4.2" fill="#FDE04F"/><text x="284" y="174" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Morning Pulse</text><text x="284" y="191" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">first-wake check-in</text></g><g><rect x="456" y="262" width="176" height="70" rx="14" fill="#151410" stroke="rgba(253,224,79,.55)" stroke-width="1.2"/><rect x="468" y="275" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="480" cy="287" r="4.2" fill="#FDE04F"/><text x="502" y="286" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">The Deck</text><text x="502" y="303" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">home hub</text></g><g><rect x="690" y="40" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="702" y="53" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="714" cy="65" r="4.2" fill="#FDE04F"/><text x="736" y="64" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Blueprint</text><text x="736" y="81" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">today&#x27;s plan</text></g><g><rect x="690" y="158" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="702" y="171" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="714" cy="183" r="4.2" fill="#B6AD97"/><text x="736" y="182" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Studio</text><text x="736" y="199" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">guided library</text></g><g><rect x="690" y="276" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="702" y="289" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="714" cy="301" r="4.2" fill="#B6AD97"/><text x="736" y="300" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Journey</text><text x="736" y="317" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">progress</text></g><g><rect x="690" y="394" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="702" y="407" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="714" cy="419" r="4.2" fill="#B6AD97"/><text x="736" y="418" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Duo</text><text x="736" y="435" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">partner workout</text></g><g><rect x="690" y="512" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="702" y="525" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="714" cy="537" r="4.2" fill="#B6AD97"/><text x="736" y="536" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Profile</text><text x="736" y="553" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">settings</text></g><g><rect x="906" y="40" width="176" height="86" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="918" y="53" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="930" cy="65" r="4.2" fill="#FDE04F"/><text x="952" y="64" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Plan Review</text><text x="952" y="81" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">skip · easier · swap</text><rect x="918" y="101" width="58" height="17" rx="8.5" fill="#FDE04F" fill-opacity=".14"/><text x="947" y="113" text-anchor="middle" font-size="10" fill="#FDE04F" font-family="Inter,system-ui,sans-serif">auto 3 s</text></g><g><rect x="906" y="158" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="918" y="171" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="930" cy="183" r="4.2" fill="#B6AD97"/><text x="952" y="182" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Playlist</text><text x="952" y="199" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">category detail</text></g><g><rect x="906" y="276" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="918" y="289" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="930" cy="301" r="4.2" fill="#B6AD97"/><text x="952" y="300" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Consult</text><text x="952" y="317" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">change the plan</text></g><g><rect x="906" y="394" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="918" y="407" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="930" cy="419" r="4.2" fill="#B6AD97"/><text x="952" y="418" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">The Ring</text><text x="952" y="435" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">room lobby</text></g><g><rect x="1146" y="60" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="1158" y="73" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="1170" cy="85" r="4.2" fill="#FDE04F"/><text x="1192" y="84" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">On Deck</text><text x="1192" y="101" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">3 s countdown</text></g><g><rect x="1146" y="156" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="1158" y="169" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="1170" cy="181" r="4.2" fill="#FDE04F"/><text x="1192" y="180" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Session</text><text x="1192" y="197" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">unguided</text></g><g><rect x="1146" y="252" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="1158" y="265" width="24" height="24" rx="8" fill="#B6AD97" fill-opacity=".14"/><circle cx="1170" cy="277" r="4.2" fill="#B6AD97"/><text x="1192" y="276" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Coach mode</text><text x="1192" y="293" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">guided video</text></g><g><rect x="1146" y="348" width="176" height="70" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="1158" y="361" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="1170" cy="373" r="4.2" fill="#FDE04F"/><text x="1192" y="372" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Breathe</text><text x="1192" y="389" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">set rest</text></g><g><rect x="1146" y="444" width="176" height="86" rx="14" fill="#151410" stroke="rgba(245,237,208,.13)" stroke-width="1.2"/><rect x="1158" y="457" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="1170" cy="469" r="4.2" fill="#FDE04F"/><text x="1192" y="468" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">Recap</text><text x="1192" y="485" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">exercise summary</text><rect x="1158" y="505" width="64" height="17" rx="8.5" fill="#FDE04F" fill-opacity=".14"/><text x="1190" y="517" text-anchor="middle" font-size="10" fill="#FDE04F" font-family="Inter,system-ui,sans-serif">auto 15 s</text></g><g><rect x="1370" y="262" width="176" height="70" rx="14" fill="#151410" stroke="rgba(253,224,79,.55)" stroke-width="1.2"/><rect x="1382" y="275" width="24" height="24" rx="8" fill="#FDE04F" fill-opacity=".14"/><circle cx="1394" cy="287" r="4.2" fill="#FDE04F"/><text x="1416" y="286" font-size="13.5" font-weight="600" fill="#F5EDD0" font-family="Inter,system-ui,sans-serif">The Wrap</text><text x="1416" y="303" font-size="11" fill="#7A725F" font-family="Inter,system-ui,sans-serif">session complete</text></g></svg></div>
+    <p class="canvas-note"><span><b>Solid gold</b> = main path</span><span><b>Dashed</b> = alternate paths and loops</span><span>3 min idle on any screen → Standby</span><span class="sw">Scroll sideways →</span></p>
+    <div class="minis">
+      <div class="card mini rv"><div class="pair"><div class="scr"><img src="img/s/onboarding_kriya.webp" alt="Kria intro: blue orb" loading="lazy"></div><div class="scr"><img src="img/s/onboarding_plan_card.webp" alt="Your 8-week plan card" loading="lazy"></div></div><h4>First launch</h4><p>Kria introduces itself, you pick a coach, have a short chat and walk away with an 8-week plan.</p></div>
+      <div class="card mini rv"><div class="pair"><div class="scr"><img src="img/s/studio.webp" alt="Studio: program cards with photos" loading="lazy"></div><div class="scr"><img src="img/s/playlist.webp" alt="Playlist: Simple and Sinister tracklist" loading="lazy"></div></div><h4>Studio</h4><p>Programs laid out like albums. Pick one, see the tracklist, say "play it".</p></div>
+      <div class="card mini rv"><div class="pair"><div class="scr"><img src="img/s/duo.webp" alt="Duo: create or join a room" loading="lazy"></div><div class="scr"><img src="img/s/duo_ring.webp" alt="The Ring: four-digit room code" loading="lazy"></div></div><h4>Duo</h4><p>Create a room, read out the four-digit code, train side by side.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ GLASS + VOICE ═════════ -->
+<section class="sec tight" id="glass">
+  <div class="wrap">
+    <p class="eyebrow rv">Interaction design</p>
+    <h2 class="rv">Designed for glass, <span class="dim">not a screen.</span></h2>
+    <div class="glass">
+      <div class="card gpair rv">
+        <figure><img src="img/mirror-selfie.webp" alt="Photo through the real mirror: exercise name on top, rep count left, timer right, vitals at the bottom, with Anurag's reflection in the middle" loading="lazy"><figcaption>On the glass</figcaption></figure>
+        <figure><img src="img/s/solo_session_v5.webp" alt="The same Solo Session screen as designed" loading="lazy" style="border:1px solid #2a261e"><figcaption>As designed</figcaption></figure>
+      </div>
+      <div class="card gside rv">
+        <h3>Black disappears. Light survives.</h3>
+        <p class="p" style="margin-top:10px">Behind a two-way mirror, black pixels become your reflection. So the UI is near-black, with warm off-white type and one gold accent. Red means stop. Type is sized for 1–2 metres, and the data sits at the edges at mid-height so your body stays clear in the middle and you can check your own form.</p>
+        <div class="sw"><span><i style="background:#080705"></i>#080705 · becomes mirror</span><span><i style="background:#F5EDD0"></i>#F5EDD0 · type</span><span><i style="background:#FDE04F"></i>#FDE04F · Aryan</span><span><i style="background:#E84040"></i>#E84040 · stop</span></div>
+        <div class="sp2"></div>
+        <p class="label">Trade-off</p><p class="p" style="margin-top:4px">No full-bleed imagery mid-workout. Everything has to read through glass in a lit room.</p>
+      </div>
+    </div>
+    <div class="glass">
+      <div class="card gside rv">
+        <h3>Voice first. Glance second.</h3>
+        <p class="p" style="margin-top:10px">You're up to two metres away, holding 16 kg, sweating. Touch is out. So every screen runs on voice, and every button is labelled with exactly what you say, so the label teaches the command. Four commands per screen, max.</p>
+        <p class="p" style="margin-top:10px">Silence counts as an answer: Plan Review moves on after 3 seconds, Recap after 15.</p>
+        <div class="cmds"><span>"Skip it"</span><span>"Easier"</span><span>"Swap this"</span><span>"Next"</span></div>
+        <div class="sp2"></div>
+        <p class="label">Trade-off</p><p class="p" style="margin-top:4px">A tiny vocabulary. Deeper features live in Studio, Journey and Profile, never on a workout screen.</p>
+      </div>
+      <div class="card vpair rv"><div class="scr"><img src="img/s/plan_review2.webp" alt="Plan Review: one exercise at a time with four voice commands" loading="lazy"></div><div class="scr"><img src="img/s/recap.webp" alt="Recap: form score, coaching line and auto-advance bar" loading="lazy"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ BUILD ═════════ -->
+<section class="sec tight" id="build">
+  <div class="wrap">
+    <p class="eyebrow rv">Building it</p>
+    <h2 class="rv">Designed by me. <span class="dim">Accelerated by AI.</span></h2>
+    <p class="lede rv">No team, no dev hand-off. I sketched and cut the steel frame in the NID workshop and set two-way glass over a portrait display. The idea, the interaction design, the system logic and the maths are mine. AI was my execution layer: I briefed it the way I would brief an engineering team, reviewed what came back, tested it on the real mirror and kept only what met the bar. That is how one designer shipped like a small team.</p>
+    <div class="kit rv">
+      <div><p class="k">Display</p><p class="v">Portrait display + two-way glass</p></div>
+      <div><p class="k">Vision</p><p class="v">Full-HD webcam + YDLIDAR X2L</p></div>
+      <div><p class="k">Voice</p><p class="v">USB condenser mic</p></div>
+      <div><p class="k">Compute</p><p class="v">Laptop · RTX 3050 Ti · Windows 11</p></div>
+      <div><p class="k">Mount</p><p class="v">Sensors at 85–90 cm, user 1–2 m away</p></div>
+      <div><p class="k">Software</p><p class="v">Python 3.11 · PyWebView · SQLite</p></div>
+    </div>
+    <div class="masonry">
+      <figure class="rv"><img src="img/mirror-on.webp" alt="The rig switched on: workout UI showing through the mirror while Anurag sits in front" loading="lazy"><figcaption>Running: UI through the glass</figcaption></figure>
+      <figure class="rv"><img src="img/sketch.webp" alt="Pencil sketch of the leaning mirror frame on isometric paper" loading="lazy"><figcaption>First sketch of the frame</figcaption></figure>
+      <figure class="rv"><img src="img/grind.webp" alt="Anurag cutting steel with an angle grinder in the workshop" loading="lazy"><figcaption>Cutting steel in the NID workshop</figcaption></figure>
+      <figure class="rv"><img src="img/mirror-off.webp" alt="The rig switched off: just a mirror on a stand" loading="lazy"><figcaption>Off: just a mirror</figcaption></figure>
+      <figure class="rv"><img src="img/steel.webp" alt="Cut and notched steel angle sections" loading="lazy"><figcaption>Notched steel sections</figcaption></figure>
+      <figure class="rv"><img src="img/beside.webp" alt="Anurag standing beside the working mirror" loading="lazy"><figcaption>Testing distance and angle</figcaption></figure>
+      <figure class="rv"><img src="img/mic.webp" alt="USB condenser microphone on the desk" loading="lazy"><figcaption>The ears</figcaption></figure>
+      <figure class="rv"><img src="img/code-wide.webp" alt="The portrait display showing main.py late at night" loading="lazy"><figcaption>main.py on the mirror's own display</figcaption></figure>
+    </div>
+    <p class="label rv" style="margin-top:56px">How I used AI to build it</p>
+    <div class="aiw">
+      <div class="card aic rv"><p class="no">Code</p><h4>AI as my engineering team</h4><p>I designed the architecture, the logic and the maths; Claude wrote code to my specs. I reviewed every change and tested it on the real mirror before it stayed.</p></div>
+      <div class="card aic rv"><p class="no">Design</p><h4>Designed in code, not mockups</h4><p>Every screen was built as live HTML and judged on the real glass at real distance. Type, contrast and layout were tuned on the mirror, never just on a laptop.</p></div>
+      <div class="card aic rv"><p class="no">Memory</p><h4>A brain for the build</h4><p>A Notion "Mirror Brain" plus an automatic dev logger recorded every decision, so each AI session started with the full context of the project.</p></div>
+      <div class="card aic rv"><p class="no">Product</p><h4>Five models, one loop</h4><p>BlazePose sees, Whisper listens, GPT-4o thinks, ElevenLabs speaks, and Llama 3.3 runs onboarding. I designed how they hand off to each other in real time.</p></div>
+      <div class="card aic rv"><p class="no">Voice</p><h4>Characters as prompts</h4><p>Aryan, Tara and Kria each have a character bible turned into system prompts, so every generated line stays in character.</p></div>
+      <div class="card aic rv"><p class="no">Visuals</p><h4>Generated, then art-directed</h4><p>Concept renders and pitch imagery made with AI image models, then art-directed for a consistent look across the deck and this page.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═════════ OUTCOME ═════════ -->
+<section class="sec tight" id="outcome" style="padding-bottom:0">
+  <div class="wrap">
+    <p class="eyebrow rv">Outcome</p>
+    <h2 class="rv">Ran live for the jury. <span class="dim">4–5 May 2026.</span></h2>
+    <div class="works">
+      <div class="rv">Wake word to wrap-up, by voice</div>
+      <div class="rv">Onboarding chat that writes an 8-week plan</div>
+      <div class="rv">Live rep counting and form scores</div>
+      <div class="rv">Plan edits by voice: skip, easier, swap</div>
+      <div class="rv">Hinglish coaching that remembers you</div>
+      <div class="rv">Studio programs and the Duo lobby</div>
+    </div>
+    <div class="sp4"></div>
+    <h3 class="rv">What I'd do next</h3>
+    <div class="next">
+      <div class="card nx rv"><p class="no">01</p><h4>Validate the form analyser with experts</h4><p>Today's form rules are hand-tuned thresholds. Next, certified kettlebell coaches and physiotherapists grade recorded reps, and I tune the maths until the mirror agrees with them.</p></div>
+      <div class="card nx rv"><p class="no">02</p><h4>Build an expert-labelled dataset</h4><p>Graded reps become training data, so the model moves from naming the exercise to judging how well it was done.</p></div>
+      <div class="card nx rv"><p class="no">03</p><h4>Measure the machine</h4><p>Frame rate, voice latency and rep accuracy against hand counts. The prototype works; next it needs numbers.</p></div>
+      <div class="card nx rv"><p class="no">04</p><h4>Then, real homes</h4><p>Five homes, two weeks each. Measure days trained per week, not calories. That's the number that proves "daily practice".</p></div>
+    </div>
+    <div class="sp4"></div>
+    <h3 class="rv">What I learned</h3>
+    <div class="learn">
+      <div class="card lc rv"><h4>A mirror is designed by absence.</h4><p>The best interface here is the one you stop noticing. Every pixel had to earn its place against your own reflection.</p></div>
+      <div class="card lc rv"><h4>Voice UX is mostly timing.</h4><p>When to speak, when to wait, when silence means yes. Getting the pauses right mattered more than the words.</p></div>
+      <div class="card lc rv"><h4>Building it changed the design.</h4><p>Glare, distance, latency and sweat rewrote decisions that looked finished on a laptop screen.</p></div>
+    </div>
+    <div class="foot"><span>Designed and built by Anurag · NID Gandhinagar · 2026</span><span>Concept renders are marked. Everything else is the working prototype.</span></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  if(window.top===window){ var bl=document.querySelector('.backlink'); if(bl) bl.hidden=false; }
+  var root=document.documentElement, items=[].slice.call(document.querySelectorAll('.rv, .hb'));
+  if('IntersectionObserver' in window){
+    var ok=false;
+    var io=new IntersectionObserver(function(es){ ok=true; es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); },{rootMargin:'0px 0px -6% 0px',threshold:0.06});
+    root.classList.add('rv-on'); items.forEach(function(el){ io.observe(el); });
+    setTimeout(function(){ if(!ok){ items.forEach(function(el){ el.classList.add('in'); }); } },1500);
+  }
+  var loops=[].slice.call(document.querySelectorAll('video[data-loop]'));
+  if('IntersectionObserver' in window){
+    var vio=new IntersectionObserver(function(es){ es.forEach(function(e){ var v=e.target; if(e.isIntersecting){ v.preload='auto'; var p=v.play(); if(p&&p.catch)p.catch(function(){}); } else { v.pause(); } }); },{threshold:0.2});
+    loops.forEach(function(v){ vio.observe(v); });
+  } else { loops.forEach(function(v){ v.preload='auto'; v.autoplay=true; }); }
+  var vid=document.getElementById('demoVideo'), tabs=[].slice.call(document.querySelectorAll('.tab'));
+  tabs.forEach(function(t){ t.addEventListener('click',function(){ if(t.getAttribute('aria-selected')==='true')return; tabs.forEach(function(x){x.setAttribute('aria-selected',x===t?'true':'false');}); vid.pause(); vid.poster=t.dataset.poster; vid.src=t.dataset.src; vid.load(); var p=vid.play(); if(p&&p.catch)p.catch(function(){}); }); });
+  [].slice.call(document.querySelectorAll('[data-go]')).forEach(function(b){ b.addEventListener('click',function(){ var el=document.getElementById(b.dataset.go); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); }); });
+  function dragScroll(s){ var down=false,sx=0,sl=0; s.addEventListener('pointerdown',function(e){ if(e.pointerType!=='mouse')return; down=true; sx=e.clientX; sl=s.scrollLeft; }); window.addEventListener('pointermove',function(e){ if(!down)return; var dx=e.clientX-sx; if(Math.abs(dx)>4)s.classList.add('drag'); s.scrollLeft=sl-dx; }); window.addEventListener('pointerup',function(){ if(!down)return; down=false; s.classList.remove('drag'); }); }
+  dragScroll(document.getElementById('strip')); [].slice.call(document.querySelectorAll('.canvas')).forEach(dragScroll);
+  function post(){ try{ if(window.parent!==window) window.parent.postMessage({type:'pf-case-height',h:Math.ceil(document.body.getBoundingClientRect().height)},location.origin); }catch(e){} }
+  window.addEventListener('load',post); window.addEventListener('resize',post);
+  if('ResizeObserver' in window) new ResizeObserver(post).observe(document.body);
+})();
+</script>
+</body>
+</html>
